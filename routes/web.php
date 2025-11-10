@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\RolePermission\RoleController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\User\ArchivedUserController;
 use App\Http\Controllers\Dashboard\User\UserController;
+use App\Http\Controllers\Frontend\HomeController as FrontendHomeController;
 use App\Http\Middleware\CheckAccountActivation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -146,7 +147,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Frontend Pages Routes
 Route::name('frontend.')->group(function () {
-
+    Route::get('home', [FrontendHomeController::class, 'home'])->name('home');
 });
 
 
