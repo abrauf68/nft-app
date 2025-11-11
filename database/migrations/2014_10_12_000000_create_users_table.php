@@ -19,9 +19,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->foreignId('inviter_id')->nullable()->constrained('users')->nullOnDelete();
             $table->enum('is_active', ['active', 'inactive'])->default('active');
             $table->string('provider')->nullable();
             $table->string('provider_id')->nullable();
+            $table->string('otp')->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
+            $table->timestamp('otp_verified_at')->nullable();
             $table->timestamps();
             $table->softDeletes(); // This adds the 'deleted_at' column
         });

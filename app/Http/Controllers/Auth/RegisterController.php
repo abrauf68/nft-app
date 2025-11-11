@@ -24,47 +24,43 @@ class RegisterController extends Controller
         if (Auth::check()) {
             return redirect()->route('dashboard');
         } else {
-            return view('auth.register');
+            return view('frontend.auth.register');
         }
     }
 
-    public function register_attempt(Request $request){
-    
+    public function register_attempt(Request $request)
+    {
+
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => [
-                'required',
-                Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols()
-            ],
+            'password' => ['required', 'string', 'min:8'],
             'confirm-password' => 'required|same:password',
+            'invitation_code' => 'required|string|max:255|exists:users,username',
             'terms' => 'required|string|max:255',
         ];
-        
+
         // Make 'g-recaptcha-response' nullable if CAPTCHA is not enabled
         if (config('captcha.version') !== 'no_captcha') {
             $rules['g-recaptcha-response'] = 'required|captcha';
         } else {
             $rules['g-recaptcha-response'] = 'nullable';
         }
-        
+
         $validate = Validator::make($request->all(), $rules);
-        if($validate->fails()){
+        if ($validate->fails()) {
             return Redirect::back()->withErrors($validate)->withInput($request->all())->with('error', 'Validation Error!');
         }
-        try{
+        try {
             // Begin a transaction
             DB::beginTransaction();
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->email_verified_at = now();
             $user->password = Hash::make($request->password);
 
-            
+
             $username = $this->generateUsername($request->name);
 
             while (User::where('username', $username)->exists()) {
@@ -72,8 +68,16 @@ class RegisterController extends Controller
             }
             $user->username = $username;
             $user->save();
-    
+
             $user->syncRoles('user');
+
+            if($request->invitation_code){
+                $inviter = User::where('username', $request->invitation_code)->first();
+                if($inviter){
+                    $user->inviter_id = $inviter->id;
+                    $user->save();
+                }
+            }
 
             $profile = new Profile();
             $profile->user_id = $user->id;
@@ -82,23 +86,23 @@ class RegisterController extends Controller
 
             // Attempt to authenticate
             Auth::attempt(['email' => $request->email, 'password' => $request->password]);
-            
-            if (Auth::check()) {
 
-                VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
-                    return (new MailMessage)
-                        ->subject('Verify Email Address')
-                        ->line('Click the button below to verify your email address.')
-                        ->action('Verify Email Address', $url);
-                });
-            }
-            app('notificationService')->notifyUsers([$user], 'Welcome to ' . Helper::getCompanyName());
-            $user->sendEmailVerificationNotification();
-    
+            // if (Auth::check()) {
+
+            //     VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            //         return (new MailMessage)
+            //             ->subject('Verify Email Address')
+            //             ->line('Click the button below to verify your email address.')
+            //             ->action('Verify Email Address', $url);
+            //     });
+            // }
+            app('notificationService')->notifyUsers([$user], 'Registered Successfully' ,'Welcome to ' . Helper::getCompanyName());
+            // $user->sendEmailVerificationNotification();
+
             // Commit the transaction
             DB::commit();
 
-            return redirect()->route('login')->with('success','Your account has been created successfully.');
+            return redirect()->route('login')->with('success', 'Your account has been created successfully.');
         } catch (\Throwable $th) {
             DB::rollback();
             // Log the error for debugging
@@ -110,10 +114,22 @@ class RegisterController extends Controller
 
     public function generateUsername($name)
     {
+        // convert name to lowercase and remove spaces
         $name = strtolower(str_replace(' ', '', $name));
-        $username = $name . rand(1000, 9999);
+
+        // generate 4 random digits
+        $random = rand(1000, 9999);
+
+        // limit the name part so total length doesn't exceed 8 characters
+        $maxNameLength = 8 - strlen($random);
+        $shortName = substr($name, 0, $maxNameLength);
+
+        // combine both parts
+        $username = $shortName . $random;
+
         return $username;
     }
+
 
     // protected function generateUsername($name)
     // {

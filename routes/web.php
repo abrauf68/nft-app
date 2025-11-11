@@ -37,9 +37,9 @@ use Illuminate\Support\Facades\Session;
 
 Route::get('/lang/{lang}', function ($lang) {
     // dd($lang);
-    if(! in_array($lang, ['en','fr','ar','de'])){
+    if (! in_array($lang, ['en', 'fr', 'ar', 'de'])) {
         abort(404);
-    }else{
+    } else {
         session(['locale' => $lang]);
         App::setLocale($lang);
         Log::info("Locale set to: " . $lang);
@@ -67,6 +67,13 @@ Route::group(['middleware' => ['guest']], function () {
     //User Register Authentication Routes
     Route::get('register', [RegisterController::class, 'register'])->name('register');
     Route::post('registration-attempt', [RegisterController::class, 'register_attempt'])->name('register.attempt');
+
+    Route::post('send-otp-email', [LoginController::class, 'sendOTP'])->name('otp-email');
+    Route::get('otp-verification', [LoginController::class, 'otp_verification'])->name('otp-verification');
+    Route::get('resend-otp/{email}', [LoginController::class, 'resend_otp'])->name('resend-otp');
+    Route::post('verify-otp', [LoginController::class, 'verify_otp'])->name('verify-otp');
+    Route::get('reset-password', [LoginController::class, 'reset_password'])->name('reset-password');
+    Route::post('reset-password-attempt', [LoginController::class, 'reset_password_attempt'])->name('reset-password.attempt');
 
     // Google Authentication Routes
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google.login');
@@ -142,12 +149,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         });
     });
-
 });
 
 // Frontend Pages Routes
 Route::name('frontend.')->group(function () {
-    Route::get('home', [FrontendHomeController::class, 'home'])->name('home');
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('home', [FrontendHomeController::class, 'home'])->name('home');
+    });
 });
 
 
@@ -178,4 +186,3 @@ Route::middleware(['auth'])->group(function () {
         return "Optimization cache cleared!";
     })->name('clear.optimize');
 });
-

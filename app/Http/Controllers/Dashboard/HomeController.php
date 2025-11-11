@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -12,7 +14,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('dashboard.index');
+        try {
+            $user = User::findOrFail(auth()->user()->id);
+            if($user->hasRole('user')){
+                return redirect()->route('frontend.home');
+            }else{
+                return view('dashboard.index');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error loading dashboard: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while loading the dashboard.');
+        }
     }
 
     /**

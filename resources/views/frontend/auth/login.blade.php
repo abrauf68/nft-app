@@ -1,6 +1,6 @@
-@extends('frontend.layouts.master')
+@extends('frontend.layouts.auth.master')
 
-@section('title', 'Home')
+@section('title', 'Sign In')
 
 @section('css')
 @endsection
@@ -9,140 +9,91 @@
 @endsection
 
 @section('content')
-    <main class="main login-page">
-        <!-- Start of Breadcrumb -->
-        <nav class="breadcrumb-nav">
-            <div class="container">
-                <ul class="breadcrumb">
-                    <li><a href="{{ route('home') }}">Home</a></li>
-                    <li>My Account</li>
-                </ul>
+    <!-- Page Title Start -->
+    <div class="flex justify-start items-center gap-4 relative z-10">
+        {{-- <a href="./index.html"
+                class="bg-white p-2 rounded-full flex justify-center items-center text-xl dark:bg-color10">
+                <i class="ph ph-caret-left"></i>
+            </a> --}}
+        <h2 class="text-2xl font-semibold text-white">Sign In</h2>
+    </div>
+    <!-- Page Title End -->
+
+    <!-- Sign In Form Start -->
+    <form action="{{route('login.attempt')}}" method="POST" class="relative z-10">
+        @csrf
+        <div class="bg-white py-8 px-6 rounded-xl mt-12 dark:bg-color10">
+            <div class="flex justify-between items-center">
+                <a href="{{ route('login') }}"
+                    class="text-center text-xl font-semibold text-p2 border-b-2 pb-2 border-p2 w-full dark:text-p1 dark:border-p1">Sign
+                    In</a>
+                <a href="{{ route('register') }}"
+                    class="text-center text-xl font-semibold text-bgColor18 border-b-2 pb-2 border-bgColor18 w-full dark:text-color18 dark:border-color18">Sign
+                    Up</a>
             </div>
-        </nav>
-        <!-- End of Breadcrumb -->
-        <div class="page-content">
-            <div class="container">
-                <div class="login-popup">
-                    <div class="tab tab-nav-boxed tab-nav-center tab-nav-underline">
-                        <ul class="nav nav-tabs text-uppercase" role="tablist">
-                            <li class="nav-item">
-                                <a href="#sign-in" class="nav-link active">Sign In</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#sign-up" class="nav-link">Sign Up</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="sign-in">
-                                <form action="{{ route('login.attempt') }}" method="POST">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label>Username or email address *</label>
-                                        <input type="text" class="form-control" name="email_username" id="email_username"
-                                            required>
-                                    </div>
-                                    <div class="form-group mb-0">
-                                        <label>Password *</label>
-                                        <input type="password" class="form-control" name="password" id="password" required>
-                                    </div>
-                                    <div class="form-checkbox d-flex align-items-center justify-content-between">
-                                        <input type="checkbox" class="custom-checkbox" id="remember1" name="remember1">
-                                        <label for="remember1">Remember me</label>
-                                        <a href="#">Forget your password?</a>
-                                    </div>
-                                    <button class="btn btn-primary w-100">Sign In</button>
-                                </form>
-                            </div>
-                            <div class="tab-pane" id="sign-up">
-                                <form action="{{ route('register.attempt') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label>Your Name <span style="color: red;">*</span></label>
-                                        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name"  placeholder="{{ __('Enter your name') }}" value="{{ old('name') }}" required>
-                                        @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Your Email <span style="color: red;">*</span></label>
-                                        <input type="email" class="form-control" name="email" id="email" required>
-                                    </div>
-                                    <div class="form-group mb-5">
-                                        <label>Your Password <span style="color: red;">*</span></label>
-                                        <input type="password" class="form-control" name="password" id="password" required>
-                                    </div>
-                                    <div class="form-group mb-5">
-                                        <label>Repeat Password <span style="color: red;">*</span></label>
-                                        <input type="password" class="form-control" name="confirm_password"
-                                            id="confirm_password" required>
-                                    </div>
-                                    <div class="form-group mb-5">
-                                        <label>Transaction Password <span style="color: red;">*</span></label>
-                                        <input type="password" class="form-control" name="transaction_password"
-                                            id="transaction_password" required>
-                                    </div>
-                                    <div class="form-group mb-5">
-                                        <label>Repeat Transaction Password <span style="color: red;">*</span></label>
-                                        <input type="password" class="form-control" name="confirm_transaction_password"
-                                            id="confirm_transaction_password" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Shop Name <span style="color: red;">*</span></label>
-                                        <input type="text" class="form-control" name="shop_name" id="shop_name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Certificate Type <span style="color: red;">*</span></label>
-                                        <select class="form-control" name="certificate_type" id="certificate_type" required>
-                                            <option value="" selected disabled>Select Certificate Type</option>
-                                            <option value="id">ID</option>
-                                            <option value="aadhar_card">Aadhar Card</option>
-                                            <option value="passport">Passport</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Certificate Front <span style="color: red;">*</span></label>
-                                        <input type="file" class="form-control" name="certificate_front"
-                                            id="certificate_front" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Certificate Back <span style="color: red;">*</span></label>
-                                        <input type="file" class="form-control" name="certificate_back"
-                                            id="certificate_back" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Invitation Code <span style="color: red;">*</span></label>
-                                        <input type="text" class="form-control" name="invitation_code"
-                                            id="invitation_code" required>
-                                    </div>
-                                    <p>Your personal data will be used to support your experience
-                                        throughout this website, to manage access to your account,
-                                        and for other purposes described in our <a href="#"
-                                            class="text-primary">privacy
-                                            policy</a>.</p>
-                                    {{-- <a href="#" class="d-block mb-5 text-primary">Signup as a vendor?</a> --}}
-                                    <div class="form-checkbox d-flex align-items-center justify-content-between mb-5">
-                                        <input type="checkbox" class="custom-checkbox" id="terms" name="terms"
-                                            required="">
-                                        <label for="terms" class="font-size-md">I agree to the <a href="#"
-                                                class="text-primary font-size-md">privacy policy</a></label>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-                                </form>
-                            </div>
-                        </div>
-                        {{-- <p class="text-center">Sign in with social account</p>
-                        <div class="social-icons social-icon-border-color d-flex justify-content-center">
-                            <a href="#" class="social-icon social-facebook w-icon-facebook"></a>
-                            <a href="#" class="social-icon social-twitter w-icon-twitter"></a>
-                            <a href="#" class="social-icon social-google fab fa-google"></a>
-                        </div> --}}
-                    </div>
+
+            <div class="pt-8">
+                <p class="text-sm font-semibold pb-2">{{__('Email/Username')}}</p>
+                <div class="flex justify-between items-center py-3 px-4 border border-color21 rounded-xl dark:border-color18 gap-3 @error('email_username') is-invalid @enderror">
+                    <input type="text" placeholder="Enter Email" name="email_username"
+                        class="outline-none bg-transparent text-n600 text-sm placeholder:text-sm w-full placeholder:text-bgColor18 dark:text-color18 dark:placeholder:text-color18"
+                        autofocus required />
+                    <i class="ph ph-envelope-simple text-xl text-bgColor18 !leading-none"></i>
                 </div>
+                @error('email_username')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </div>
+            <div class="pt-4">
+                <p class="text-sm font-semibold pb-2">{{__('Password')}}</p>
+                <div class="flex justify-between items-center py-3 px-4 border border-color21 rounded-xl dark:border-color18 gap-3 @error('password') is-invalid @enderror">
+                    <input type="password" placeholder="*****" name="password"
+                        class="outline-none bg-transparent text-n600 text-sm placeholder:text-sm w-full placeholder:text-bgColor18 dark:text-color18 dark:placeholder:text-color18 passwordField" required />
+                    <i class="ph ph-eye-slash text-xl text-bgColor18 !leading-none passowordShow cursor-pointer dark:text-color18"></i>
+                </div>
+                @error('password')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+            @if (Route::has('password.request'))
+                <a href="{{ route('password.request') }}" class="text-end text-p2 text-sm font-semibold block pt-2 dark:text-p1">Forgot
+                    password?</a>
+            @endif
         </div>
-    </main>
+
+        <button style="width: 100%;" type="submit"
+            class="bg-p2 rounded-full py-3 text-white text-sm font-semibold text-center block mt-12 dark:bg-p1">Sign
+            In</button>
+    </form>
+    <div class="relative z-10">
+        <div class="flex justify-center items-center my-8 gap-2">
+            <div class="border-b border-color21 w-full dark:border-color18"></div>
+            <p class="text-sm text-color1 text-nowrap dark:text-white">
+                Or Continue With
+            </p>
+            <div class="border-b border-color21 w-full dark:border-color18"></div>
+        </div>
+        <div class="flex flex-col gap-4">
+            <button class="flex justify-center items-center gap-3 py-3 border border-color21 text-sm font-semibold rounded-full bg-white dark:bg-color11 dark:border-color21">
+                <img src="{{ asset('frontAssets/images/google.png') }}" alt="" />
+                <p>Continue With</p>
+            </button>
+            <button class="flex justify-center items-center gap-3 py-3 border border-color21 text-sm font-semibold rounded-full bg-white dark:bg-color11 dark:border-color21">
+                <img src="{{ asset('frontAssets/images/AppleLogo.png') }}" alt="" />
+                <p>Continue With</p>
+            </button>
+        </div>
+
+        <p class="text-sm font-semibold text-center pt-5">
+            Don’t have an account?
+            <a href="{{ route('register') }}" class="text-p2 dark:text-p1">Sign Up</a> here
+        </p>
+    </div>
+    <!-- Sign In Form End -->
 @endsection
 
 @section('script')
