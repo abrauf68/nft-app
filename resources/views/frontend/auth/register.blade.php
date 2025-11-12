@@ -90,7 +90,7 @@
                 <p class="text-sm font-semibold pb-2">{{__('Invitation Code')}}</p>
                 <div
                     class="flex justify-between items-center py-3 px-4 border border-color21 rounded-xl dark:border-color18 gap-3 @error('invitation_code') is-invalid @enderror">
-                    <input type="text" placeholder="Enter invitation code" name="invitation_code" value="{{ old('invitation_code') }}"
+                    <input type="text" placeholder="Enter invitation code" name="invitation_code" value="{{ old('invitation_code', request('code')) }}"
                         class="outline-none bg-transparent text-n600 text-sm placeholder:text-sm w-full placeholder:text-bgColor18 dark:text-color18 dark:placeholder:text-color18" required/>
                     <i class="ph ph-user text-xl text-bgColor18 !leading-none"></i>
                 </div>

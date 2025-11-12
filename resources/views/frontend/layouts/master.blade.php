@@ -48,7 +48,7 @@
                         class="text-white border border-color24 p-2 rounded-full flex justify-center items-center bg-color24">
                         <i class="ph ph-bell"></i>
                     </a>
-                    <a href="./my-profile.html"
+                    <a href="{{ route('frontend.profile') }}"
                         class="text-white border border-color24 p-2 rounded-full flex justify-center items-center bg-color24">
                         <i class="ph ph-user"></i>
                     </a>
@@ -70,47 +70,38 @@
 
     <!-- Logout Modal Start -->
     <div class="hidden inset-0 withdrawModal z-50">
-      <div class="bg-black opacity-40 absolute inset-0 container"></div>
-      <div class="flex justify-end items-end flex-col h-full">
-        <div class="container relative">
-          <img
-            src="./assets/images/modal-bg-white.png"
-            alt=""
-            class="dark:hidden"
-          />
-          <img
-            src="./assets/images/modal-bg-black.png"
-            alt=""
-            class="hidden dark:block"
-          />
-          <div class="bg-white dark:bg-color1 relative z-40 overflow-auto pb-8">
-            <div
-              class="px-6 pt-8 border-b border-color21 dark:border-color24 border-dashed pb-5 mx-6"
-            >
-              <p class="text-2xl text-p1 text-center font-semibold">Log Out</p>
-            </div>
+        <div class="bg-black opacity-40 absolute inset-0 container"></div>
+        <div class="flex justify-end items-end flex-col h-full">
+            <div class="container relative">
+                <img src="{{ asset('frontAssets/images/modal-bg-white.png') }}" alt="" class="dark:hidden" />
+                <img src="{{ asset('frontAssets/images/modal-bg-black.png') }}" alt=""
+                    class="hidden dark:block" />
+                <div class="bg-white dark:bg-color1 relative z-40 overflow-auto pb-8">
+                    <div class="px-6 pt-8 border-b border-color21 dark:border-color24 border-dashed pb-5 mx-6">
+                        <p class="text-2xl text-p1 text-center font-semibold">Log Out</p>
+                    </div>
 
-            <div class="pt-5 px-6">
-              <p class="text-color5 dark:text-white pb-8 text-center">
-                Are you sure you want to log out?
-              </p>
-              <div class="flex justify-between items-center gap-3">
-                <button
-                  class="withdrawModalCloseButton border border-color16 bg-color14 rounded-full py-3 text-p2 text-sm font-semibold text-center block dark:border-p1 w-full dark:text-white"
-                >
-                  Cancel
-                </button>
-                <a
-                  href="./sign-in.html"
-                  class="bg-p2 rounded-full py-3 text-white text-sm font-semibold text-center block dark:bg-p1 w-full"
-                >
-                  Yes, Logout
-                </a>
-              </div>
+                    <div class="pt-5 px-6">
+                        <p class="text-color5 dark:text-white pb-8 text-center">
+                            Are you sure you want to log out?
+                        </p>
+                        <div class="flex justify-between items-center gap-3">
+                            <button
+                                class="withdrawModalCloseButton border border-color16 bg-color14 rounded-full py-3 text-p2 text-sm font-semibold text-center block dark:border-p1 w-full dark:text-white">
+                                Cancel
+                            </button>
+                            <a href="javascript:void(0);" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                class="bg-p2 rounded-full py-3 text-white text-sm font-semibold text-center block dark:bg-p1 w-full">
+                                Yes, Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
     <!-- Logout Modal End -->
 

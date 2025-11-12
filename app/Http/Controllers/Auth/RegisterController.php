@@ -79,9 +79,11 @@ class RegisterController extends Controller
                 }
             }
 
+            $randomNumber = rand(1, 10);
             $profile = new Profile();
             $profile->user_id = $user->id;
             $profile->first_name = $request->name;
+            $profile->profile_image = "frontAssets/images/avatars/{$randomNumber}.png";
             $profile->save();
 
             // Attempt to authenticate

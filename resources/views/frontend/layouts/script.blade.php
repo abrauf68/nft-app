@@ -4,7 +4,8 @@
 <script src="{{ asset('frontAssets/js/main.js') }}"></script>
 <script src="{{ asset('frontAssets/js/plugins/plugins.js') }}"></script>
 <script src="{{ asset('frontAssets/js/plugins/plugin-custom.js') }}"></script>
-<script src="{{ asset('frontAssets/js/plugins/circle-slider.js') }}"></script>
+<script src="{{ asset('frontAssets/js/plugins/apexcharts.min.js') }}"></script>
+<script src="{{ asset('frontAssets/js/plugins/apex-custom.js') }}"></script>
 <script defer src="{{ asset('frontAssets/js/index.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>

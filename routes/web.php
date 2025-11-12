@@ -14,6 +14,8 @@ use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\User\ArchivedUserController;
 use App\Http\Controllers\Dashboard\User\UserController;
 use App\Http\Controllers\Frontend\HomeController as FrontendHomeController;
+use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
+use App\Http\Controllers\Frontend\WalletController;
 use App\Http\Middleware\CheckAccountActivation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -54,9 +56,6 @@ Route::get('/current-time', function () {
 });
 
 Auth::routes();
-Route::get('/', function () {
-    return redirect()->route('dashboard');
-});
 // Guest Routes
 Route::group(['middleware' => ['guest']], function () {
 
@@ -154,7 +153,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Frontend Pages Routes
 Route::name('frontend.')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('home', [FrontendHomeController::class, 'home'])->name('home');
+        Route::get('/', [FrontendHomeController::class, 'home'])->name('home');
+        Route::get('share-and-earn', [FrontendHomeController::class, 'shareEarn'])->name('share.earn');
+        Route::get('user/profile', [FrontendProfileController::class, 'index'])->name('profile');
+        Route::get('user/wallet', [WalletController::class, 'index'])->name('wallet');
+        Route::get('settings/profile', [FrontendProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('settings/profile/update', [FrontendProfileController::class, 'update'])->name('profile.update');
+        Route::get('settings', [FrontendProfileController::class, 'settings'])->name('settings');
+        Route::post('settings/change-password', [FrontendProfileController::class, 'changePassword'])->name('settings.change-password');
     });
 });
 

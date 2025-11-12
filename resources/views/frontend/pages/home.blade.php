@@ -27,69 +27,69 @@
                 class="flex justify-around items-center rounded-full relative rotate-0 circleSliders duration-700 max-[430px]:size-[209vw] size-[900px]">
                 <a href=""
                     class="flex flex-col justify-center items-center text-center gap-3 absolute -left-[1%] bottom-[35%] rotate-[58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/bitcoin.png')}}" alt="BTC" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/bitcoin.png') }}" alt="BTC" class="" />
                     <p class="text-xs font-semibold dark:text-white">BTC</p>
                 </a>
                 <div
                     class="flex flex-col justify-center items-center text-center gap-3 absolute left-[2%] bottom-[24%] rotate-[58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/etherium.png')}}" alt="ETH" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/etherium.png') }}" alt="ETH" class="" />
                     <p class="text-xs font-semibold dark:text-white">ETH</p>
                 </div>
                 <div
                     class="flex flex-col justify-center items-center text-center gap-3 absolute left-[7%] bottom-[14.5%] rotate-[58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/solana.png')}}" alt="SOL" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/solana.png') }}" alt="SOL" class="" />
                     <p class="text-xs font-semibold dark:text-white">
                         SOL
                     </p>
                 </div>
                 <div
                     class="flex flex-col justify-center items-center text-center gap-3 absolute left-[15.5%] bottom-[7.5%] rotate-[58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/binance-coin.png')}}" alt="" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/binance-coin.png') }}" alt="" class="" />
                     <p class="text-xs font-semibold dark:text-white">
                         BNB
                     </p>
                 </div>
 
                 <div class="flex flex-col justify-center items-center text-center gap-3 absolute left-[29%] bottom-0">
-                    <img src="{{ asset('frontAssets/images/coins/bitcoin.png')}}" alt="BTC" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/bitcoin.png') }}" alt="BTC" class="" />
                     <p class="text-xs font-semibold dark:text-white">BTC</p>
                 </div>
                 <div class="flex flex-col justify-center items-center text-center gap-3 absolute left-[39.5%] -bottom-[3%]">
-                    <img src="{{ asset('frontAssets/images/coins/etherium.png')}}" alt="ETH" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/etherium.png') }}" alt="ETH" class="" />
                     <p class="text-xs font-semibold dark:text-white">ETH</p>
                 </div>
                 <div class="flex flex-col justify-center items-center text-center gap-3 absolute right-[40.5%] -bottom-[3%]">
-                    <img src="{{ asset('frontAssets/images/coins/solana.png')}}" alt="SOL" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/solana.png') }}" alt="SOL" class="" />
                     <p class="text-xs font-semibold dark:text-white">
                         SOL
                     </p>
                 </div>
                 <div class="flex flex-col justify-center items-center text-center gap-3 absolute right-[31%] bottom-0">
-                    <img src="{{ asset('frontAssets/images/coins/binance-coin.png')}}" alt="BNB" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/binance-coin.png') }}" alt="BNB" class="" />
                     <p class="text-xs font-semibold dark:text-white">
                         BNB
                     </p>
                 </div>
 
                 <div class="flex flex-col justify-center items-center text-center gap-3 absolute right-[16.5%] bottom-[6.5%] rotate-[-58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/bitcoin.png')}}" alt="BTC" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/bitcoin.png') }}" alt="BTC" class="" />
                     <p class="text-xs font-semibold dark:text-white">BTC</p>
                 </div>
                 <div
                     class="flex flex-col justify-center items-center text-center gap-3 absolute right-[8%] bottom-[13%] rotate-[-58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/etherium.png')}}" alt="ETH" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/etherium.png') }}" alt="ETH" class="" />
                     <p class="text-xs font-semibold dark:text-white">ETH</p>
                 </div>
                 <div
                     class="flex flex-col justify-center items-center text-center gap-3 absolute right-[2%] bottom-[23.5%] rotate-[-58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/solana.png')}}" alt="SOL" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/solana.png') }}" alt="SOL" class="" />
                     <p class="text-xs font-semibold dark:text-white">
                         SOL
                     </p>
                 </div>
                 <div
                     class="flex flex-col justify-center items-center text-center gap-3 absolute right-0 bottom-[34%] rotate-[-58deg]">
-                    <img src="{{ asset('frontAssets/images/coins/binance-coin.png')}}" alt="" class="" />
+                    <img src="{{ asset('frontAssets/images/coins/binance-coin.png') }}" alt="" class="" />
                     <p class="text-xs font-semibold dark:text-white">BNB</p>
                 </div>
             </div>
@@ -119,7 +119,7 @@
                 <p class="pl-7">Earn Up To</p>
             </div>
             <div class="">
-                <img src="./assets/images/invite_illus.png" alt="" />
+                <img src="{{ asset('frontAssets/images/invite_illus.png') }}" alt="" />
             </div>
         </div>
     </div>
@@ -221,13 +221,13 @@
                                 #1
                             </p>
                         </div>
-                        <img src="./assets/images/Flags1.png" alt="" />
+                        <img src="{{ asset('frontAssets/images/Flags1.png') }}" alt="" />
                     </div>
                     <div class="flex flex-col justify-center items-center pt-4">
                         <div class="relative size-24 flex justify-center items-center">
-                            <img src="./assets/images/user-img-1.png" alt="" class="size-[68px] rounded-full" />
-                            <img src="./assets/images/user-progress.svg" alt="" class="absolute top-0 left-0" />
-                            <img src="./assets/images/medal1.svg" alt=""
+                            <img src="{{ asset('frontAssets/images/user-img-1.png') }}" alt="" class="size-[68px] rounded-full" />
+                            <img src="{{ asset('frontAssets/images/user-progress.svg') }}" alt="" class="absolute top-0 left-0" />
+                            <img src="{{ asset('frontAssets/images/medal1.svg') }}" alt=""
                                 class="absolute -bottom-1.5 left-9 size-7" />
                         </div>
                         <a href="./user-profile.html" class="text-xs font-semibold text-color8 dark:text-white pt-4">
@@ -252,13 +252,13 @@
                                 #2
                             </p>
                         </div>
-                        <img src="./assets/images/Flags2.png" alt="" />
+                        <img src="{{ asset('frontAssets/images/Flags2.png') }}" alt="" />
                     </div>
                     <div class="flex flex-col justify-center items-center pt-4">
                         <div class="relative size-24 flex justify-center items-center">
-                            <img src="./assets/images/user-img-2.png" alt="" class="size-[68px] rounded-full" />
-                            <img src="./assets/images/user-progress.svg" alt="" class="absolute top-0 left-0" />
-                            <img src="./assets/images/medal2.svg" alt=""
+                            <img src="{{ asset('frontAssets/images/user-img-2.png') }}" alt="" class="size-[68px] rounded-full" />
+                            <img src="{{ asset('frontAssets/images/user-progress.svg') }}" alt="" class="absolute top-0 left-0" />
+                            <img src="{{ asset('frontAssets/images/medal2.svg') }}" alt=""
                                 class="absolute -bottom-1.5 left-9 size-7" />
                         </div>
                         <a href="./user-profile.html" class="text-xs font-semibold text-color8 dark:text-white pt-4">
@@ -283,13 +283,13 @@
                                 #3
                             </p>
                         </div>
-                        <img src="./assets/images/GB.png" alt="" />
+                        <img src="{{ asset('frontAssets/images/GB.png') }}" alt="" />
                     </div>
                     <div class="flex flex-col justify-center items-center pt-4">
                         <div class="relative size-24 flex justify-center items-center">
-                            <img src="./assets/images/user-img-3.png" alt="" class="size-[68px] rounded-full" />
-                            <img src="./assets/images/user-progress.svg" alt="" class="absolute top-0 left-0" />
-                            <img src="./assets/images/medal3.svg" alt=""
+                            <img src="{{ asset('frontAssets/images/user-img-3.png') }}" alt="" class="size-[68px] rounded-full" />
+                            <img src="{{ asset('frontAssets/images/user-progress.svg') }}" alt="" class="absolute top-0 left-0" />
+                            <img src="{{ asset('frontAssets/images/medal3.svg') }}" alt=""
                                 class="absolute -bottom-1.5 left-9 size-7" />
                         </div>
                         <a href="./user-profile.html" class="text-xs font-semibold text-color8 dark:text-white pt-4">
@@ -493,4 +493,5 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('frontAssets/js/plugins/circle-slider.js') }}"></script>
 @endsection

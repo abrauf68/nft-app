@@ -1,6 +1,6 @@
 "use strict";
 
-/*============================================ 
+/*============================================
 ======== Table of JS Functions =========
 ============================================*/
 
@@ -249,6 +249,11 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   //show password
+  const currentPassowordShow = document.querySelector(".currentPassowordShow");
+  const currentPasswordField = document.querySelector(".currentPasswordField");
+  if (currentPassowordShow) {
+    showPasswordFunc(currentPassowordShow, currentPasswordField);
+  }
   const passowordShow = document.querySelector(".passowordShow");
   const passwordField = document.querySelector(".passwordField");
   if (passowordShow) {

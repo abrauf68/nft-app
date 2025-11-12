@@ -7,7 +7,7 @@
             </button>
             <div class="bg-p2 text-white pt-8 pb-4 px-5">
                 <div class="flex justify-start items-center gap-3 pb-6 border-b border-color24 border-dashed">
-                    <img src="./assets/images/user_sidebar.png" alt="" />
+                    <img src="{{ asset(Auth::user()->profile->profile_image ?? 'frontAssets/images/user-img.png') }}" style="width: 50px; border: 2px dotted #FF710F; border-radius: 50px;" alt="" />
                     <div class="">
                         <p class="text-2xl font-semibold">
                             {{ Auth::user()->name }} <i class="ph-fill ph-seal-check text-p1"></i>
@@ -23,8 +23,8 @@
                             <i class="ph-fill ph-chart-bar"></i>
                         </div>
                         <div class="">
-                            <p class="text-xs">Rank</p>
-                            <p class="text-base font-semibold">420</p>
+                            <p class="text-xs">Referrals</p>
+                            <p class="text-base font-semibold">8</p>
                         </div>
                     </div>
                     <div
@@ -35,8 +35,8 @@
                             <i class="ph-fill ph-coins"></i>
                         </div>
                         <div class="">
-                            <p class="text-xs">Quizio Coin Earned</p>
-                            <p class="text-base font-semibold">20</p>
+                            <p class="text-xs">Total Earned</p>
+                            <p class="text-base font-semibold">20$</p>
                         </div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                 </p>
             </div>
             <div class="flex flex-col">
-                <a href="./upgrade-premium.html" class="flex justify-between items-center py-3 px-4 bg-p1 text-white">
+                {{-- <a href="./upgrade-premium.html" class="flex justify-between items-center py-3 px-4 bg-p1 text-white">
                     <div class="flex justify-start items-center gap-3">
                         <img src="./assets/images/premium-badge.png" alt="" />
                         <p class="font-semibold">Upgrade to Primium</p>
@@ -53,8 +53,8 @@
                     <div class="flex justify-center items-center rounded-full">
                         <i class="ph ph-arrow-right"></i>
                     </div>
-                </a>
-                <a href="./my-profile.html"
+                </a> --}}
+                <a href="{{ route('frontend.profile') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -67,29 +67,31 @@
                         <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
-                <a href="./my-wallet.html"
+                <a href="{{ route('frontend.wallet') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
                             class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
                             <i class="ph ph-wallet"></i>
                         </div>
-                        <p class="font-semibold dark:text-white">Balance</p>
+                        <p class="font-semibold dark:text-white">My Wallet</p>
                     </div>
                     <p class="text-p1 font-semibold text-sm">$40</p>
                 </a>
-                <a href="earn-rewards.html"
+                <a href="{{ route('frontend.share.earn') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
                             class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-users-three"></i>
+                            <i class="ph ph-user"></i>
                         </div>
                         <p class="font-semibold dark:text-white">Share & Earn</p>
                     </div>
-                    <p class="text-p1 font-semibold text-sm">$65</p>
+                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
+                        <i class="ph ph-arrow-right"></i>
+                    </div>
                 </a>
-                <a href="./notification-setting.html"
+                <a href=""
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -103,7 +105,7 @@
                     </div>
                 </a>
 
-                <a href="./settings.html"
+                <a href=""
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -116,46 +118,7 @@
                         <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
-                <a href="./master-medal.html"
-                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
-                    <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-medal"></i>
-                        </div>
-                        <p class="font-semibold dark:text-white">Award</p>
-                    </div>
-                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
-                        <i class="ph ph-arrow-right"></i>
-                    </div>
-                </a>
-                <a href="./earn-rewards.html"
-                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
-                    <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-share-network"></i>
-                        </div>
-                        <p class="font-semibold dark:text-white">Share App</p>
-                    </div>
-                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
-                        <i class="ph ph-arrow-right"></i>
-                    </div>
-                </a>
-                <a href="./top-member.html"
-                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
-                    <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-users-three"></i>
-                        </div>
-                        <p class="font-semibold dark:text-white">Top Members</p>
-                    </div>
-                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
-                        <i class="ph ph-arrow-right"></i>
-                    </div>
-                </a>
-                <a href="./about-quizio.html"
+                <a href=""
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -168,46 +131,7 @@
                         <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
-                <a href="./choose-category.html"
-                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
-                    <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-diamonds-four"></i>
-                        </div>
-                        <p class="font-semibold dark:text-white">Category</p>
-                    </div>
-                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
-                        <i class="ph ph-arrow-right"></i>
-                    </div>
-                </a>
-                <div
-                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
-                    <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-lightbulb-filament"></i>
-                        </div>
-                        <p class="font-semibold dark:text-white">Suggest a Contest</p>
-                    </div>
-                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
-                        <i class="ph ph-arrow-right"></i>
-                    </div>
-                </div>
-                <a href="./chat.html"
-                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
-                    <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-chats-teardrop"></i>
-                        </div>
-                        <p class="font-semibold dark:text-white">Chat with Us</p>
-                    </div>
-                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
-                        <i class="ph ph-arrow-right"></i>
-                    </div>
-                </a>
-                <a href="./help-center.html"
+                <a href=""
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -220,19 +144,6 @@
                         <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
-                <div
-                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
-                    <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-shield"></i>
-                        </div>
-                        <p class="font-semibold dark:text-white">Game Rules</p>
-                    </div>
-                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
-                        <i class="ph ph-arrow-right"></i>
-                    </div>
-                </div>
                 <button class="flex justify-between items-center py-3 px-4 dark:bg-color1 withdrawModalOpenButton">
                     <div class="flex justify-start items-center gap-3">
                         <div

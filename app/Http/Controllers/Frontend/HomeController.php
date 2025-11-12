@@ -18,4 +18,15 @@ class HomeController extends Controller
             return redirect()->back()->with('error', 'An error occurred while loading the home page.');
         }
     }
+
+    public function shareEarn()
+    {
+        try {
+            return view('frontend.pages.share-and-earn');
+        } catch (\Throwable $th) {
+            //throw $th;
+            Log::error('Error loading share-and-earn page: ' . $th->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while loading the home page.');
+        }
+    }
 }
