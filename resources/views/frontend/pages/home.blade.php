@@ -200,9 +200,8 @@
         </div>
     </div>
 
-    <div class="container mx-auto py-10">
+    {{-- <div class="container mx-auto py-10">
 
-        {{-- COIN ICONS --}}
         <div class="coin-selector">
             @foreach ($priceData as $coinId => $coinInfo)
                 <img src="{{ $coinInfo['image'] }}" alt="{{ strtoupper($coinId) }}"
@@ -212,7 +211,6 @@
             @endforeach
         </div>
 
-        {{-- PRICE DISPLAY --}}
         <div class="price-info">
             @php $first = array_key_first($priceData); @endphp
             <h3 id="coinName">{{ strtoupper($first) }}</h3>
@@ -225,16 +223,15 @@
             </p>
         </div>
 
-        {{-- CHART --}}
         <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg">
             <canvas id="cryptoChart"></canvas>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @section('script')
     <script src="{{ asset('frontAssets/js/plugins/circle-slider.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const ctx = document.getElementById('cryptoChart').getContext('2d');
@@ -329,5 +326,5 @@
                 });
             });
         });
-    </script>
+    </script> --}}
 @endsection
