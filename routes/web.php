@@ -155,7 +155,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Frontend Pages Routes
 Route::name('frontend.')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/', [FrontendHomeController::class, 'home'])->name('home');
+        Route::get('/home', [FrontendHomeController::class, 'home'])->name('home');
         Route::get('share-and-earn', [FrontendHomeController::class, 'shareEarn'])->name('share.earn');
         Route::get('user/profile', [FrontendProfileController::class, 'index'])->name('profile');
         Route::get('user/wallet', [WalletController::class, 'index'])->name('wallet');
