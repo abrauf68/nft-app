@@ -3,14 +3,88 @@
 @section('title', 'Home')
 
 @section('css')
-<style>
-    .absolute img{
-        height: 50px !important;
-    }
-    .absolute .text-xs{
-        color: #fff !important;
-    }
-</style>
+    <style>
+        .absolute img {
+            height: 50px !important;
+        }
+
+        .absolute .text-xs {
+            color: #fff !important;
+        }
+    </style>
+    <style>
+        .coin-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .coin-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+            border: 2px solid transparent;
+        }
+
+        .coin-icon:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .coin-icon.active {
+            opacity: 1;
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+        }
+
+        .price-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* .price-info h3 {
+                font-size: 2rem;
+                font-weight: 700;
+            } */
+
+        .price-info span {
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        canvas {
+            max-height: 360px;
+        }
+
+        .price-info span#coinPrice {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+        }
+
+        .price-info span#coinChange {
+            font-size: 1rem; /* Prominent change percentage */
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            /* Default background for neutral/unloaded state */
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .price-info span#coinChange.text-green-600 {
+            background-color: rgba(16, 185, 129, 0.2); /* Tailwind green-500 with opacity */
+            color: #10b981;
+        }
+
+        .price-info span#coinChange.text-red-600 {
+            background-color: rgba(239, 68, 68, 0.2);
+            /* Tailwind red-500 with opacity */
+            color: #ef4444;
+        }
+    </style>
 @endsection
 
 @section('breadcrumb-items')
@@ -58,7 +132,8 @@
                     <img src="{{ asset('frontAssets/images/coins/etherium.png') }}" alt="ETH" class="" />
                     <p class="text-xs font-semibold dark:text-white">ETH</p>
                 </div>
-                <div class="flex flex-col justify-center items-center text-center gap-3 absolute right-[40.5%] -bottom-[3%]">
+                <div
+                    class="flex flex-col justify-center items-center text-center gap-3 absolute right-[40.5%] -bottom-[3%]">
                     <img src="{{ asset('frontAssets/images/coins/solana.png') }}" alt="SOL" class="" />
                     <p class="text-xs font-semibold dark:text-white">
                         SOL
@@ -71,7 +146,8 @@
                     </p>
                 </div>
 
-                <div class="flex flex-col justify-center items-center text-center gap-3 absolute right-[16.5%] bottom-[6.5%] rotate-[-58deg]">
+                <div
+                    class="flex flex-col justify-center items-center text-center gap-3 absolute right-[16.5%] bottom-[6.5%] rotate-[-58deg]">
                     <img src="{{ asset('frontAssets/images/coins/bitcoin.png') }}" alt="BTC" class="" />
                     <p class="text-xs font-semibold dark:text-white">BTC</p>
                 </div>
@@ -124,374 +200,134 @@
         </div>
     </div>
 
-    <div class="pt-12 px-6">
-        <div class="flex justify-between items-center">
-            <div class="flex justify-start items-center gap-2">
-                <i class="ph-fill text-xl ph-trophy text-p1"></i>
-                <h3 class="text-xl font-semibold">Current Contest</h3>
-            </div>
-            <a href="./upcoming-contest.html" class="text-p1 font-semibold text-sm">See All</a>
+    <div class="container mx-auto py-10">
+
+        {{-- COIN ICONS --}}
+        <div class="coin-selector">
+            @foreach ($priceData as $coinId => $coinInfo)
+                <img src="{{ $coinInfo['image'] }}" alt="{{ strtoupper($coinId) }}"
+                    class="coin-icon {{ $loop->first ? 'active' : '' }}" data-coin="{{ $coinId }}"
+                    data-usd="{{ $coinInfo['usd'] }}" data-change="{{ $coinInfo['usd_24h_change'] }}"
+                    data-sparkline="{{ json_encode($coinInfo['sparkline']) }}">
+            @endforeach
         </div>
-        <div class="pt-5">
-            <a href="./quiz-details.html" class="rounded-2xl overflow-hidden shadow2 block">
-                <div class="flex justify-between items-center py-3.5 px-5 bg-p2 bg-opacity-20 dark:bg-bgColor16">
-                    <div class="flex justify-start items-center gap-3">
-                        <p class="font-medium">Starting In</p>
-                        <div class="flex justify-start items-center gap-1">
-                            <p
-                                class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                05
-                            </p>
-                            <p class="text-p2 text-base font-semibold dark:text-white">
-                                :
-                            </p>
-                            <p
-                                class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                14
-                            </p>
-                            <p class="text-p2 text-base font-semibold dark:text-white">
-                                :
-                            </p>
-                            <p
-                                class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                20
-                            </p>
-                        </div>
-                    </div>
-                    <p class="text-xs text-p1">Read Instruction</p>
-                </div>
-                <div class="p-5 bg-white dark:bg-color10">
-                    <div class="flex justify-start items-center gap-2">
-                        <div class="py-1 px-2 text-white bg-p2 rounded-lg dark:bg-p1 dark:text-black">
-                            <p class="font-semibold text-xs">19 Jun</p>
-                            <p class="text-[10px]">04.32</p>
-                        </div>
-                        <div class="">
-                            <p class="font-semibold text-sm">Browse By Category</p>
-                            <p class="text-xs">Language - English , Hindi</p>
-                        </div>
-                    </div>
-                    <div
-                        class="flex justify-between items-center text-xs py-5 border-b border-dashed border-black border-opacity-10 dark:border-color24">
-                        <div class="">
-                            <p>Max Time</p>
-                            <p class="font-semibold">5 min</p>
-                        </div>
-                        <div class="">
-                            <p>Max Ques</p>
-                            <p class="font-semibold">v</p>
-                        </div>
-                        <div class="">
-                            <p>No of Contest</p>
-                            <p class="font-semibold">1</p>
-                        </div>
-                    </div>
-                    <div class="pt-5 flex justify-between items-center">
-                        <div class="flex justify-start items-center gap-1">
-                            <i class="ph ph-brain text-p2"></i>
-                            <p class="text-xs">Trivia Quiz</p>
-                        </div>
-                        <div class="flex justify-start items-center gap-2">
-                            <i class="ph ph-bell-ringing"></i>
-                            <i class="ph ph-share-network"></i>
-                        </div>
-                    </div>
-                </div>
-            </a>
+
+        {{-- PRICE DISPLAY --}}
+        <div class="price-info">
+            @php $first = array_key_first($priceData); @endphp
+            <h3 id="coinName">{{ strtoupper($first) }}</h3>
+            <p>
+                <span id="coinPrice" class="font-bold text-2xl">${{ number_format($priceData[$first]['usd'], 2) }}</span>
+                <span id="coinChange"
+                    class="{{ $priceData[$first]['usd_24h_change'] >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                    {{ number_format($priceData[$first]['usd_24h_change'], 2) }}%
+                </span>
+            </p>
         </div>
-    </div>
-    <div class="pt-12 pl-6">
-        <div class="flex justify-between items-center pr-6">
-            <div class="flex justify-start items-center gap-2">
-                <i class="ph-fill text-xl ph-trophy text-p1"></i>
-                <h3 class="text-xl font-semibold">Best Players</h3>
-            </div>
-            <a href="./players.html" class="text-p1 font-semibold text-sm">See All</a>
-        </div>
-        <div class="pt-5 swiper best-player-slider">
-            <div class="swiper-wrapper">
-                <div
-                    class="p-4 rounded-xl border border-black border-opacity-10 bg-white shadow2 swiper-slide dark:bg-color9 dark:border-color24">
-                    <div
-                        class="flex justify-between items-center pb-3 border-b border-dashed border-black border-opacity-10">
-                        <div
-                            class="bg-p2 bg-opacity-10 border border-p2 border-opacity-20 py-1 px-3 flex justify-start items-center gap-1 rounded-full dark:bg-bgColor14 dark:border-bgColor16">
-                            <i class="ph-fill ph-trophy text-p1"></i>
-                            <p class="text-xs font-semibold text-p2 dark:text-white">
-                                #1
-                            </p>
-                        </div>
-                        <img src="{{ asset('frontAssets/images/Flags1.png') }}" alt="" />
-                    </div>
-                    <div class="flex flex-col justify-center items-center pt-4">
-                        <div class="relative size-24 flex justify-center items-center">
-                            <img src="{{ asset('frontAssets/images/user-img-1.png') }}" alt="" class="size-[68px] rounded-full" />
-                            <img src="{{ asset('frontAssets/images/user-progress.svg') }}" alt="" class="absolute top-0 left-0" />
-                            <img src="{{ asset('frontAssets/images/medal1.svg') }}" alt=""
-                                class="absolute -bottom-1.5 left-9 size-7" />
-                        </div>
-                        <a href="./user-profile.html" class="text-xs font-semibold text-color8 dark:text-white pt-4">
-                            ShadowStriker
-                        </a>
-                        <p class="text-color8 pt-1 pb-4 dark:text-white text-xs">
-                            1060 XP
-                        </p>
-                        <button class="text-white text-xs bg-p2 py-1 px-4 rounded-full dark:bg-p1">
-                            Follow
-                        </button>
-                    </div>
-                </div>
-                <div
-                    class="p-4 rounded-xl border border-black border-opacity-10 bg-white shadow2 swiper-slide dark:bg-color9 dark:border-color24">
-                    <div
-                        class="flex justify-between items-center pb-3 border-b border-dashed border-black border-opacity-10">
-                        <div
-                            class="bg-p2 bg-opacity-10 border border-p2 border-opacity-20 py-1 px-3 flex justify-start items-center gap-1 rounded-full dark:bg-bgColor14 dark:border-bgColor16">
-                            <i class="ph-fill ph-trophy text-p1"></i>
-                            <p class="text-xs font-semibold text-p2 dark:text-white">
-                                #2
-                            </p>
-                        </div>
-                        <img src="{{ asset('frontAssets/images/Flags2.png') }}" alt="" />
-                    </div>
-                    <div class="flex flex-col justify-center items-center pt-4">
-                        <div class="relative size-24 flex justify-center items-center">
-                            <img src="{{ asset('frontAssets/images/user-img-2.png') }}" alt="" class="size-[68px] rounded-full" />
-                            <img src="{{ asset('frontAssets/images/user-progress.svg') }}" alt="" class="absolute top-0 left-0" />
-                            <img src="{{ asset('frontAssets/images/medal2.svg') }}" alt=""
-                                class="absolute -bottom-1.5 left-9 size-7" />
-                        </div>
-                        <a href="./user-profile.html" class="text-xs font-semibold text-color8 dark:text-white pt-4">
-                            BlazeKnight
-                        </a>
-                        <p class="text-color8 pt-1 pb-4 dark:text-white text-xs">
-                            660 XP
-                        </p>
-                        <button class="text-white text-xs bg-p2 py-1 px-4 rounded-full dark:bg-p1">
-                            Follow
-                        </button>
-                    </div>
-                </div>
-                <div
-                    class="p-4 rounded-xl border border-black border-opacity-10 bg-white shadow2 swiper-slide dark:bg-color9 dark:border-color24">
-                    <div
-                        class="flex justify-between items-center pb-3 border-b border-dashed border-black border-opacity-10">
-                        <div
-                            class="bg-p2 bg-opacity-10 border border-p2 border-opacity-20 py-1 px-3 flex justify-start items-center gap-1 rounded-full dark:bg-bgColor14 dark:border-bgColor16">
-                            <i class="ph-fill ph-trophy text-p1"></i>
-                            <p class="text-xs font-semibold text-p2 dark:text-white">
-                                #3
-                            </p>
-                        </div>
-                        <img src="{{ asset('frontAssets/images/GB.png') }}" alt="" />
-                    </div>
-                    <div class="flex flex-col justify-center items-center pt-4">
-                        <div class="relative size-24 flex justify-center items-center">
-                            <img src="{{ asset('frontAssets/images/user-img-3.png') }}" alt="" class="size-[68px] rounded-full" />
-                            <img src="{{ asset('frontAssets/images/user-progress.svg') }}" alt="" class="absolute top-0 left-0" />
-                            <img src="{{ asset('frontAssets/images/medal3.svg') }}" alt=""
-                                class="absolute -bottom-1.5 left-9 size-7" />
-                        </div>
-                        <a href="./user-profile.html" class="text-xs font-semibold text-color8 dark:text-white pt-4">
-                            ShadowStriker
-                        </a>
-                        <p class="text-color8 pt-1 pb-4 dark:text-white text-xs">
-                            2060 XP
-                        </p>
-                        <button class="text-white text-xs bg-p2 py-1 px-4 rounded-full dark:bg-p1">
-                            Follow
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="pt-12 pl-6">
-        <div class="flex justify-between items-center pr-6">
-            <div class="flex justify-start items-center gap-2">
-                <h3 class="text-xl font-semibold">Upcoming Contest</h3>
-            </div>
-            <a href="./upcoming-contest.html" class="text-p1 font-semibold text-sm">See All</a>
-        </div>
-        <div class="pt-5 swiper upcoming-contest-slider">
-            <div class="swiper-wrapper">
-                <a href="./quiz-details.html"
-                    class="rounded-2xl overflow-hidden shadow2 swiper-slide border border-color21">
-                    <div class="p-5 bg-white dark:bg-color10">
-                        <div class="flex justify-between items-center">
-                            <div class="flex justify-start items-center gap-2">
-                                <div class="py-1 px-2 text-white bg-p2 rounded-lg dark:bg-p1 dark:text-black">
-                                    <p class="font-semibold text-xs">19 Jun</p>
-                                    <p class="text-[10px]">04.32</p>
-                                </div>
-                                <div class="">
-                                    <p class="font-semibold text-xs">
-                                        English Language Quiz
-                                    </p>
-                                    <p class="text-xs">Language - English</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-start items-center gap-1">
-                                <p
-                                    class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                    05
-                                </p>
-                                <p class="text-p2 text-base font-semibold dark:text-p1">
-                                    :
-                                </p>
-                                <p
-                                    class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                    14
-                                </p>
-                                <p class="text-p2 text-base font-semibold dark:text-p1">
-                                    :
-                                </p>
-                                <p
-                                    class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                    20
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center text-xs pt-5">
-                            <div class="flex gap-2">
-                                <p>Max Time</p>
-                                <p class="font-semibold">- 5 min</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <p>Max Ques</p>
-                                <p class="font-semibold">- 20</p>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center gap-2 text-xs py-3 text-nowrap">
-                            <p>30 left</p>
-                            <div
-                                class="relative bg-p2 dark:bg-p1 dark:bg-opacity-10 bg-opacity-10 h-1 w-full rounded-full after:absolute after:h-1 after:w-[40%] after:bg-p2 after:dark:bg-p1 after:rounded-full">
-                            </div>
-                            <p>100 spots</p>
-                        </div>
-                        <div
-                            class="border-b border-dashed border-black dark:border-color24 border-opacity-10 pb-5 flex justify-between items-center text-xs">
-                            <div class="flex justify-start items-center gap-2">
-                                <div class="text-white flex justify-center items-center p-2 bg-p1 rounded-full">
-                                    <i class="ph ph-trophy"></i>
-                                </div>
-                                <div class="">
-                                    <p>Price Pool</p>
-                                    <p class="font-semibold">$100</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-start items-center gap-2">
-                                <button class="text-white text-xs bg-p2 py-1 px-4 rounded-full dark:bg-p1">
-                                    Join Now
-                                </button>
-                                <div class="">
-                                    <p>Entry</p>
-                                    <p class="font-semibold">$2.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pt-5 flex justify-between items-center">
-                            <div class="flex justify-start items-center gap-1">
-                                <i class="ph ph-brain text-p2"></i>
-                                <p class="text-xs">Trivia Quiz</p>
-                            </div>
-                            <div class="flex justify-start items-center gap-2">
-                                <i class="ph ph-bell-ringing"></i>
-                                <i class="ph ph-share-network"></i>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <a href="./quiz-details.html"
-                    class="rounded-2xl overflow-hidden shadow2 swiper-slide border border-color21">
-                    <div class="p-5 bg-white dark:bg-color10">
-                        <div class="flex justify-between items-center">
-                            <div class="flex justify-start items-center gap-2">
-                                <div class="py-1 px-2 text-white bg-p2 rounded-lg dark:bg-p1 dark:text-black">
-                                    <p class="font-semibold text-xs">20 Jun</p>
-                                    <p class="text-[10px]">05.25</p>
-                                </div>
-                                <div class="">
-                                    <p class="font-semibold text-xs">China Language Quiz</p>
-                                    <p class="text-xs">Language - English</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-start items-center gap-1">
-                                <p
-                                    class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                    03
-                                </p>
-                                <p class="text-p2 text-base font-semibold dark:text-p1">
-                                    :
-                                </p>
-                                <p
-                                    class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                    12
-                                </p>
-                                <p class="text-p2 text-base font-semibold dark:text-p1">
-                                    :
-                                </p>
-                                <p
-                                    class="text-p2 text-[10px] py-0.5 px-1 bg-p2 bg-opacity-20 dark:text-p1 dark:bg-color24 rounded-md">
-                                    16
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center text-xs pt-5">
-                            <div class="flex gap-2">
-                                <p>Max Time</p>
-                                <p class="font-semibold">- 5 min</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <p>Max Ques</p>
-                                <p class="font-semibold">- 20</p>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center gap-2 text-xs py-3 text-nowrap">
-                            <p>45 left</p>
-                            <div
-                                class="relative bg-p2 dark:bg-p1 dark:bg-opacity-10 bg-opacity-10 h-1 w-full rounded-full after:absolute after:h-1 after:w-[20%] after:bg-p2 after:dark:bg-p1 after:rounded-full">
-                            </div>
-                            <p>100 spots</p>
-                        </div>
-                        <div
-                            class="border-b border-dashed border-black dark:border-color24 border-opacity-10 pb-5 flex justify-between items-center text-xs">
-                            <div class="flex justify-start items-center gap-2">
-                                <div class="text-white flex justify-center items-center p-2 bg-p1 rounded-full">
-                                    <i class="ph ph-trophy"></i>
-                                </div>
-                                <div class="">
-                                    <p>Price Pool</p>
-                                    <p class="font-semibold">$100</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-start items-center gap-2">
-                                <button class="text-white text-xs bg-p2 py-1 px-4 rounded-full dark:bg-p1">
-                                    Join Now
-                                </button>
-                                <div class="">
-                                    <p>Entry</p>
-                                    <p class="font-semibold">$5.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pt-5 flex justify-between items-center">
-                            <div class="flex justify-start items-center gap-1">
-                                <i class="ph ph-brain text-p2"></i>
-                                <p class="text-xs">Language Quiz</p>
-                            </div>
-                            <div class="flex justify-start items-center gap-2">
-                                <i class="ph ph-bell-ringing"></i>
-                                <i class="ph ph-share-network"></i>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+
+        {{-- CHART --}}
+        <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg">
+            <canvas id="cryptoChart"></canvas>
         </div>
     </div>
 @endsection
 
 @section('script')
-<script src="{{ asset('frontAssets/js/plugins/circle-slider.js') }}"></script>
+    <script src="{{ asset('frontAssets/js/plugins/circle-slider.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('cryptoChart').getContext('2d');
+            const defaultCoin = document.querySelector('.coin-icon.active');
+            const sparkline = JSON.parse(defaultCoin.dataset.sparkline);
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+            gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+            let chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({
+                        length: sparkline.length
+                    }, (_, i) => `Day ${i+1}`),
+                    datasets: [{
+                        label: `${defaultCoin.dataset.coin.toUpperCase()} Price (USD)`,
+                        data: sparkline,
+                        borderColor: '#3b82f6',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: true,
+                        tension: 0.4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(200,200,200,0.1)'
+                            },
+                            ticks: {
+                                color: '#888'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#888'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#111',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            padding: 10,
+                            displayColors: false,
+                        }
+                    }
+                }
+            });
+
+            document.querySelectorAll('.coin-icon').forEach(icon => {
+                icon.addEventListener('click', () => {
+                    document.querySelectorAll('.coin-icon').forEach(i => i.classList.remove(
+                        'active'));
+                    icon.classList.add('active');
+
+                    const coin = icon.dataset.coin;
+                    const spark = JSON.parse(icon.dataset.sparkline);
+                    // Format price with commas
+                    const usd = new Intl.NumberFormat('en-US', {
+                        style: 'decimal',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(parseFloat(icon.dataset.usd));
+                    const change = parseFloat(icon.dataset.change).toFixed(2);
+
+                    document.getElementById('coinName').innerText = coin.toUpperCase();
+                    document.getElementById('coinPrice').innerText = `$${usd}`;
+                    const changeEl = document.getElementById('coinChange');
+                    changeEl.innerText = `${change}%`;
+                    changeEl.className = change >= 0 ? 'text-green-600' : 'text-red-600';
+
+                    chart.data.datasets[0].data = spark;
+                    chart.data.datasets[0].label = `${coin.toUpperCase()} Price (USD)`;
+                    chart.update();
+                });
+            });
+        });
+    </script>
 @endsection

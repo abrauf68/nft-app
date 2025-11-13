@@ -8,10 +8,10 @@
         </a>
         <a href="" class="flex justify-center items-center text-center flex-col gap-1">
             <div class="flex justify-center items-center p-3 rounded-full bg-white dark:bg-color10">
-                <i class="ph ph-squares-four text-xl !leading-none dark:text-white"></i>
+                <i class="ph ph-hammer text-xl !leading-none dark:text-white"></i>
             </div>
             <p class="text-xs text-white font-semibold dark:text-color10">
-                Library
+                Mining
             </p>
         </a>
         <a href="{{ route('frontend.share.earn') }}" class="flex justify-center items-center text-center flex-col gap-1">
@@ -22,11 +22,11 @@
                 Share & Earn
             </p>
         </a>
-        <a href="" class="flex justify-center items-center text-center flex-col gap-1">
-            <div class="flex justify-center items-center p-3 rounded-full bg-white dark:bg-color10">
-                <i class="ph ph-users-three text-xl !leading-none dark:text-white"></i>
+        <a href="{{ route('frontend.wallet') }}" class="flex justify-center items-center text-center flex-col gap-1">
+            <div class="flex justify-center items-center p-3 rounded-full  {{ request()->routeIs('frontend.wallet') ? 'bg-p1 dark:bg-p2' : 'bg-white dark:bg-color10' }}">
+                <i class="ph ph-wallet text-xl !leading-none {{ request()->routeIs('frontend.wallet') ? 'text-white' : 'dark:text-white' }}"></i>
             </div>
-            <p class="text-xs text-white font-semibold dark:text-color10">Chat</p>
+            <p class="text-xs text-white font-semibold dark:text-color10">My Wallet</p>
         </a>
     </div>
 </div>

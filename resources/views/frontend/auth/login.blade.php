@@ -70,7 +70,7 @@
             In</button>
     </form>
     <div class="relative z-10">
-        <div class="flex justify-center items-center my-8 gap-2">
+        {{-- <div class="flex justify-center items-center my-8 gap-2">
             <div class="border-b border-color21 w-full dark:border-color18"></div>
             <p class="text-sm text-color1 text-nowrap dark:text-white">
                 Or Continue With
@@ -86,7 +86,7 @@
                 <img src="{{ asset('frontAssets/images/AppleLogo.png') }}" alt="" />
                 <p>Continue With</p>
             </button>
-        </div>
+        </div> --}}
 
         <p class="text-sm font-semibold text-center pt-5">
             Don’t have an account?

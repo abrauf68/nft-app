@@ -24,7 +24,7 @@
                         </div>
                         <div class="">
                             <p class="text-xs">Referrals</p>
-                            <p class="text-base font-semibold">8</p>
+                            <p class="text-base font-semibold">0</p>
                         </div>
                     </div>
                     <div
@@ -36,13 +36,13 @@
                         </div>
                         <div class="">
                             <p class="text-xs">Total Earned</p>
-                            <p class="text-base font-semibold">20$</p>
+                            <p class="text-base font-semibold">0$</p>
                         </div>
                     </div>
                 </div>
-                <p class="pt-5 text-end text-xs">
+                {{-- <p class="pt-5 text-end text-xs">
                     <span class="text-p1">* </span>Current Month
-                </p>
+                </p> --}}
             </div>
             <div class="flex flex-col">
                 {{-- <a href="./upgrade-premium.html" class="flex justify-between items-center py-3 px-4 bg-p1 text-white">
@@ -70,13 +70,21 @@
                 <a href="{{ route('frontend.wallet') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
-                        <div
-                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
+                        <div class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
                             <i class="ph ph-wallet"></i>
                         </div>
                         <p class="font-semibold dark:text-white">My Wallet</p>
                     </div>
-                    <p class="text-p1 font-semibold text-sm">$40</p>
+                    <p class="text-p1 font-semibold text-sm">$0</p>
+                </a>
+                <a href="{{ route('frontend.request-withdraw') }}"
+                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
+                    <div class="flex justify-start items-center gap-3">
+                        <div class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
+                            <i class="ph ph-wallet"></i>
+                        </div>
+                        <p class="font-semibold dark:text-white">Withdraw</p>
+                    </div>
                 </a>
                 <a href="{{ route('frontend.share.earn') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
@@ -91,7 +99,7 @@
                         <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
-                <a href=""
+                <a href="{{ route('frontend.notifications.index') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -105,7 +113,7 @@
                     </div>
                 </a>
 
-                <a href=""
+                <a href="{{ route('frontend.settings')}}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -131,7 +139,7 @@
                         <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
-                <a href=""
+                <a href="{{ route('frontend.faqs')}}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -157,14 +165,14 @@
                     </div>
                 </button>
             </div>
-            <div class="flex justify-between items-center p-4 bg-p2 dark:bg-p1 text-white">
+            {{-- <div class="flex justify-between items-center p-4 bg-p2 dark:bg-p1 text-white">
                 <p class="text-sm">Rate this App</p>
                 <div class="flex justify-start items-center gap-1 text-yellow-400 dark:text-white">
                     <i class="ph-fill ph-star-half"></i>
                     <i class="ph-fill ph-star"></i>
                     <i class="ph-fill ph-star"></i>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

@@ -14,8 +14,10 @@ use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\User\ArchivedUserController;
 use App\Http\Controllers\Dashboard\User\UserController;
 use App\Http\Controllers\Frontend\HomeController as FrontendHomeController;
+use App\Http\Controllers\Frontend\NotificationController as FrontendNotificationController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
 use App\Http\Controllers\Frontend\WalletController;
+use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Middleware\CheckAccountActivation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -161,6 +163,25 @@ Route::name('frontend.')->group(function () {
         Route::post('settings/profile/update', [FrontendProfileController::class, 'update'])->name('profile.update');
         Route::get('settings', [FrontendProfileController::class, 'settings'])->name('settings');
         Route::post('settings/change-password', [FrontendProfileController::class, 'changePassword'])->name('settings.change-password');
+        // Notifications
+        Route::get('notifications', [FrontendNotificationController::class, 'index'])->name('notifications.index');
+
+        Route::get('notifications/{id}/mark-as-read', [FrontendNotificationController::class, 'markAsRead'])
+            ->name('notifications.markAsRead');
+
+        Route::get('notifications/mark-all-as-read', [FrontendNotificationController::class, 'markAllAsRead'])
+            ->name('notifications.markAllAsRead');
+
+        Route::get('notifications/{id}/delete', [FrontendNotificationController::class, 'deleteNotification'])
+            ->name('notifications.delete');
+
+        Route::get('notifications/delete-all', [FrontendNotificationController::class, 'deleteAllNotifications'])
+            ->name('notifications.deleteAll');
+
+        Route::get('help-center/faqs', [FrontendHomeController::class, 'faqs'])->name('faqs');
+        Route::get('help-center/contact', [FrontendHomeController::class, 'contact'])->name('contact');
+
+        Route::get('request-withdraw', [WithdrawController::class, 'index'])->name('request-withdraw');
     });
 });
 

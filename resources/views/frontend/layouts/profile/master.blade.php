@@ -69,13 +69,15 @@
                                     <p class="text-sm text-nowrap">Settings</p>
                                 </div>
                             </a>
-                            <div class="flex justify-start items-center gap-3 py-3 cursor-pointer">
-                                <div
-                                    class="text-p2 dark:text-white dark:bg-color24 dark:border-color18 border border-color16 p-2 rounded-full flex justify-center items-center bg-color14 text-sm">
-                                    <i class="ph ph-scroll"></i>
+                            <a href="{{ route('frontend.faqs') }}">
+                                <div class="flex justify-start items-center gap-3 py-3 cursor-pointer">
+                                    <div
+                                        class="text-p2 dark:text-white dark:bg-color24 dark:border-color18 border border-color16 p-2 rounded-full flex justify-center items-center bg-color14 text-sm">
+                                        <i class="ph ph-seal-question"></i>
+                                    </div>
+                                    <p class="text-sm text-nowrap">Help Center</p>
                                 </div>
-                                <p class="text-sm text-nowrap">Privacy Policy</p>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>

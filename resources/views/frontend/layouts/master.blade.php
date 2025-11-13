@@ -43,17 +43,25 @@
                     </button>
                     <h2 class="text-2xl font-semibold text-white">@yield('title')</h2>
                 </div>
-                <div class="flex justify-start items-center gap-2">
-                    <a href=""
-                        class="text-white border border-color24 p-2 rounded-full flex justify-center items-center bg-color24">
+                <div class="flex justify-start items-center gap-2 relative">
+                    <a href="{{ route('frontend.notifications.index') }}"
+                        class="text-white border border-color24 p-2 rounded-full flex justify-center items-center bg-color24 relative">
                         <i class="ph ph-bell"></i>
+
+                        {{-- Red dot for unread notifications --}}
+                        @if (Auth::user()->notifications()->whereNull('read_at')->count() > 0)
+                            <span
+                                style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; background-color: red; border-radius: 50%; border: 2px solid #fff;"></span>
+                        @endif
                     </a>
+
                     <a href="{{ route('frontend.profile') }}"
                         class="text-white border border-color24 p-2 rounded-full flex justify-center items-center bg-color24">
                         <i class="ph ph-user"></i>
                     </a>
                 </div>
             </div>
+
             <!-- Page Title End -->
 
             @yield('content')
@@ -90,7 +98,8 @@
                                 class="withdrawModalCloseButton border border-color16 bg-color14 rounded-full py-3 text-p2 text-sm font-semibold text-center block dark:border-p1 w-full dark:text-white">
                                 Cancel
                             </button>
-                            <a href="javascript:void(0);" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                            <a href="javascript:void(0);"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                 class="bg-p2 rounded-full py-3 text-white text-sm font-semibold text-center block dark:bg-p1 w-full">
                                 Yes, Logout
                             </a>
