@@ -48,9 +48,9 @@
         }
 
         /* .price-info h3 {
-                font-size: 2rem;
-                font-weight: 700;
-            } */
+                                font-size: 2rem;
+                                font-weight: 700;
+                            } */
 
         .price-info span {
             font-size: 1rem;
@@ -66,7 +66,8 @@
         }
 
         .price-info span#coinChange {
-            font-size: 1rem; /* Prominent change percentage */
+            font-size: 1rem;
+            /* Prominent change percentage */
             padding: 5px 12px;
             border-radius: 8px;
             font-weight: 600;
@@ -75,7 +76,8 @@
         }
 
         .price-info span#coinChange.text-green-600 {
-            background-color: rgba(16, 185, 129, 0.2); /* Tailwind green-500 with opacity */
+            background-color: rgba(16, 185, 129, 0.2);
+            /* Tailwind green-500 with opacity */
             color: #10b981;
         }
 
@@ -83,6 +85,57 @@
             background-color: rgba(239, 68, 68, 0.2);
             /* Tailwind red-500 with opacity */
             color: #ef4444;
+        }
+
+        .skeleton-text,
+        .skeleton-circle,
+        .skeleton-chart {
+            background: linear-gradient(90deg,
+                    #e0e0e0 25%,
+                    #f5f5f5 37%,
+                    #e0e0e0 63%);
+            background-size: 400% 100%;
+            animation: shimmer 1.4s ease infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        .skeleton-icons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .skeleton-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .skeleton-text.title {
+            width: 150px;
+            height: 22px;
+            margin-bottom: 10px;
+        }
+
+        .skeleton-text.price {
+            width: 100px;
+            height: 18px;
+            margin-bottom: 20px;
+        }
+
+        .skeleton-chart {
+            width: 100%;
+            height: 120px;
+            border-radius: 6px;
         }
     </style>
 @endsection
@@ -200,131 +253,134 @@
         </div>
     </div>
 
-    {{-- <div class="container mx-auto py-10">
+    <div class="container" style="padding:40px">
 
-        <div class="coin-selector">
-            @foreach ($priceData as $coinId => $coinInfo)
-                <img src="{{ $coinInfo['image'] }}" alt="{{ strtoupper($coinId) }}"
-                    class="coin-icon {{ $loop->first ? 'active' : '' }}" data-coin="{{ $coinId }}"
-                    data-usd="{{ $coinInfo['usd'] }}" data-change="{{ $coinInfo['usd_24h_change'] }}"
-                    data-sparkline="{{ json_encode($coinInfo['sparkline']) }}">
-            @endforeach
+        <div id="skeleton">
+            <div class="skeleton-icons">
+                <div class="skeleton-circle"></div>
+                <div class="skeleton-circle"></div>
+                <div class="skeleton-circle"></div>
+                <div class="skeleton-circle"></div>
+            </div>
+
+            <div class="skeleton-text title"></div>
+            <div class="skeleton-text price"></div>
+
+            <div class="skeleton-chart"></div>
         </div>
 
-        <div class="price-info">
-            @php $first = array_key_first($priceData); @endphp
-            <h3 id="coinName">{{ strtoupper($first) }}</h3>
+        <div id="content" style="display:none">
+            <div id="coinSelector" class="coin-selector"></div>
+
+            <h3 id="coinName">—</h3>
             <p>
-                <span id="coinPrice" class="font-bold text-2xl">${{ number_format($priceData[$first]['usd'], 2) }}</span>
-                <span id="coinChange"
-                    class="{{ $priceData[$first]['usd_24h_change'] >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                    {{ number_format($priceData[$first]['usd_24h_change'], 2) }}%
-                </span>
+                <span id="coinPrice">$0.00</span>
+                <span id="coinChange"></span>
             </p>
-        </div>
 
-        <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg">
-            <canvas id="cryptoChart"></canvas>
+            <canvas id="cryptoChart" height="120"></canvas>
         </div>
-    </div> --}}
+    </div>
+
 @endsection
 
 @section('script')
     <script src="{{ asset('frontAssets/js/plugins/circle-slider.js') }}"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const ctx = document.getElementById('cryptoChart').getContext('2d');
-            const defaultCoin = document.querySelector('.coin-icon.active');
-            const sparkline = JSON.parse(defaultCoin.dataset.sparkline);
-            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
-            gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+        const skeleton = document.getElementById('skeleton');
+        const content = document.getElementById('content');
 
+        (async function() {
+
+            const res = await fetch('/api/crypto');
+            const priceData = await res.json();
+
+            // 🔹 hide skeleton, show content
+            skeleton.style.display = 'none';
+            content.style.display = 'block';
+
+            const selector = document.getElementById('coinSelector');
+
+            if (!Object.keys(priceData).length) {
+                alert('No crypto data');
+                return;
+            }
+
+            // 🔹 ICONS
+            Object.entries(priceData).forEach(([coin, info], i) => {
+                const img = document.createElement('img');
+                img.className = 'coin-icon' + (i === 0 ? ' active' : '');
+                img.src = `https://assets.coincap.io/assets/icons/${
+                    coin === 'bitcoin' ? 'btc' :
+                    coin === 'ethereum' ? 'eth' :
+                    coin === 'solana' ? 'sol' : 'bnb'
+                }@2x.png`;
+
+                img.dataset.coin = coin;
+                img.dataset.usd = info.usd;
+                img.dataset.change = info.usd_24h_change;
+                img.dataset.sparkline = JSON.stringify(info.sparkline);
+
+                selector.appendChild(img);
+            });
+
+            const ctx = document.getElementById('cryptoChart').getContext('2d');
+            const first = document.querySelector('.coin-icon');
+
+            if (!first) return;
+
+            // 🔹 CHART
             let chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array.from({
-                        length: sparkline.length
-                    }, (_, i) => `Day ${i+1}`),
+                    labels: JSON.parse(first.dataset.sparkline).map((_, i) => i + 1),
                     datasets: [{
-                        label: `${defaultCoin.dataset.coin.toUpperCase()} Price (USD)`,
-                        data: sparkline,
-                        borderColor: '#3b82f6',
-                        backgroundColor: gradient,
-                        borderWidth: 3,
-                        pointRadius: 0,
-                        fill: true,
-                        tension: 0.4,
+                        data: JSON.parse(first.dataset.sparkline),
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        pointRadius: 0
                     }]
                 },
                 options: {
-                    responsive: true,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            grid: {
-                                color: 'rgba(200,200,200,0.1)'
-                            },
-                            ticks: {
-                                color: '#888'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#888'
-                            }
-                        }
-                    },
                     plugins: {
                         legend: {
                             display: false
-                        },
-                        tooltip: {
-                            backgroundColor: '#111',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            padding: 10,
-                            displayColors: false,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false
                         }
                     }
                 }
             });
 
+            updateUI(first);
+
+            // 🔹 CLICK HANDLER
             document.querySelectorAll('.coin-icon').forEach(icon => {
-                icon.addEventListener('click', () => {
-                    document.querySelectorAll('.coin-icon').forEach(i => i.classList.remove(
-                        'active'));
+                icon.onclick = () => {
+                    document.querySelectorAll('.coin-icon').forEach(i => i.classList.remove('active'));
                     icon.classList.add('active');
 
-                    const coin = icon.dataset.coin;
-                    const spark = JSON.parse(icon.dataset.sparkline);
-                    // Format price with commas
-                    const usd = new Intl.NumberFormat('en-US', {
-                        style: 'decimal',
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }).format(parseFloat(icon.dataset.usd));
-                    const change = parseFloat(icon.dataset.change).toFixed(2);
-
-                    document.getElementById('coinName').innerText = coin.toUpperCase();
-                    document.getElementById('coinPrice').innerText = `$${usd}`;
-                    const changeEl = document.getElementById('coinChange');
-                    changeEl.innerText = `${change}%`;
-                    changeEl.className = change >= 0 ? 'text-green-600' : 'text-red-600';
-
-                    chart.data.datasets[0].data = spark;
-                    chart.data.datasets[0].label = `${coin.toUpperCase()} Price (USD)`;
+                    chart.data.datasets[0].data = JSON.parse(icon.dataset.sparkline);
                     chart.update();
-                });
+
+                    updateUI(icon);
+                };
             });
-        });
-    </script> --}}
+
+            function updateUI(icon) {
+                document.getElementById('coinName').innerText = icon.dataset.coin.toUpperCase();
+                document.getElementById('coinPrice').innerText =
+                    '$' + parseFloat(icon.dataset.usd).toFixed(2);
+
+                const ch = document.getElementById('coinChange');
+                const c = parseFloat(icon.dataset.change).toFixed(2);
+                ch.innerText = c + '%';
+                ch.style.color = c >= 0 ? 'green' : 'red';
+            }
+        })();
+    </script>
 @endsection

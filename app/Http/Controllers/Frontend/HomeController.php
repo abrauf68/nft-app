@@ -21,6 +21,131 @@ class HomeController extends Controller
         }
     }
 
+    /**
+     * API for crypto prices (Binance + CoinCap fallback)
+     */
+    public function cryptoData()
+    {
+        $coins = [
+            'bitcoin' => [
+                'symbol' => 'BTCUSDT',
+                'image' => 'https://assets.coincap.io/assets/icons/btc@2x.png',
+            ],
+            'ethereum' => [
+                'symbol' => 'ETHUSDT',
+                'image' => 'https://assets.coincap.io/assets/icons/eth@2x.png',
+            ],
+            'solana' => [
+                'symbol' => 'SOLUSDT',
+                'image' => 'https://assets.coincap.io/assets/icons/sol@2x.png',
+            ],
+            'binancecoin' => [
+                'symbol' => 'BNBUSDT',
+                'image' => 'https://assets.coincap.io/assets/icons/bnb@2x.png',
+            ],
+        ];
+
+        return Cache::remember('crypto_data_main', 3600, function () use ($coins) {
+
+            $data = [];
+
+            foreach ($coins as $coinId => $info) {
+
+                try {
+                    /* ================= BINANCE PRICE ================= */
+                    $priceRes = Http::get('https://api.binance.com/api/v3/ticker/price', [
+                        'symbol' => $info['symbol']
+                    ]);
+
+                    if (!$priceRes->ok()) {
+                        $fallback = $this->coincapFallback($coinId, $info['image']);
+                        if ($fallback) {
+                            $data[$coinId] = $fallback;
+                        }
+                        continue;
+                    }
+
+                    $price = (float) ($priceRes['price'] ?? 0);
+
+                    /* ================= BINANCE 24H CHANGE ================= */
+                    $tickerRes = Http::get('https://api.binance.com/api/v3/ticker/24hr', [
+                        'symbol' => $info['symbol']
+                    ]);
+
+                    $change24 = $tickerRes->ok()
+                        ? (float) ($tickerRes['priceChangePercent'] ?? 0)
+                        : 0;
+
+                    /* ================= 7 DAY SPARKLINE ================= */
+                    $klinesRes = Http::get('https://api.binance.com/api/v3/klines', [
+                        'symbol' => $info['symbol'],
+                        'interval' => '1d',
+                        'limit' => 7,
+                    ]);
+
+                    $sparkline = [];
+                    if ($klinesRes->ok()) {
+                        foreach ($klinesRes->json() as $k) {
+                            if (isset($k[4])) {
+                                $sparkline[] = (float) $k[4];
+                            }
+                        }
+                    }
+
+                    $data[$coinId] = [
+                        'usd' => $price,
+                        'usd_24h_change' => $change24,
+                        'sparkline' => $sparkline ?: [0],
+                        'image' => $info['image'],
+                    ];
+
+                } catch (\Throwable $e) {
+                    Log::warning("Crypto error ({$coinId}): " . $e->getMessage());
+                }
+            }
+
+            return $data;
+        });
+    }
+
+    /**
+     * CoinCap fallback (price + 24h + sparkline)
+     */
+    private function coincapFallback(string $coinId, string $image)
+    {
+        try {
+            $assetRes = Http::get("https://api.coincap.io/v2/assets/{$coinId}");
+            if (!$assetRes->ok()) return null;
+
+            $asset = $assetRes->json('data');
+
+            $historyRes = Http::get("https://api.coincap.io/v2/assets/{$coinId}/history", [
+                'interval' => 'd1',
+                'start' => now()->subDays(7)->startOfDay()->valueOf(),
+                'end' => now()->valueOf(),
+            ]);
+
+            $spark = [];
+            foreach ($historyRes->json('data') ?? [] as $h) {
+                if (isset($h['priceUsd'])) {
+                    $spark[] = (float) $h['priceUsd'];
+                }
+            }
+
+            return [
+                'usd' => (float) ($asset['priceUsd'] ?? 0),
+                'usd_24h_change' => (float) ($asset['changePercent24Hr'] ?? 0),
+                'sparkline' => $spark ?: [0],
+                'image' => $image,
+            ];
+
+        } catch (\Throwable $e) {
+            Log::warning("CoinCap fallback failed ({$coinId}): " . $e->getMessage());
+            return null;
+        }
+    }
+
+
     // public function home()
     // {
     //     try {

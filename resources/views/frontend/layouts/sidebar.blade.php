@@ -13,7 +13,7 @@
                             {{ Auth::user()->name }} <i class="ph-fill ph-seal-check text-p1"></i>
                         </p>
                         <p class="text-xs">
-                            <span class="font-semibold">USER ID :</span> {{ Auth::user()->username }}
+                            {{ '@'.Auth::user()->username }}
                         </p>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                         </div>
                         <div class="">
                             <p class="text-xs">Referrals</p>
-                            <p class="text-base font-semibold">0</p>
+                            <p class="text-base font-semibold">{{ \App\Helpers\Helper::userReferralsCount(Auth::user()->id) }}</p>
                         </div>
                     </div>
                     <div
@@ -36,7 +36,7 @@
                         </div>
                         <div class="">
                             <p class="text-xs">Total Earned</p>
-                            <p class="text-base font-semibold">0$</p>
+                            <p class="text-base font-semibold">{{ \App\Helpers\Helper::formatCurrency(Auth::user()->wallet->balance ?? 0) }}</p>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                         </div>
                         <p class="font-semibold dark:text-white">My Wallet</p>
                     </div>
-                    <p class="text-p1 font-semibold text-sm">$0</p>
+                    <p class="text-p1 font-semibold text-sm">{{ \App\Helpers\Helper::formatCurrency(Auth::user()->wallet->balance ?? 0) }}</p>
                 </a>
                 <a href="{{ route('frontend.request-withdraw') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
@@ -84,6 +84,15 @@
                             <i class="ph ph-wallet"></i>
                         </div>
                         <p class="font-semibold dark:text-white">Withdraw</p>
+                    </div>
+                </a>
+                <a href="{{ route('frontend.rewards') }}"
+                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
+                    <div class="flex justify-start items-center gap-3">
+                        <div class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
+                            <i class="ph ph-medal"></i>
+                        </div>
+                        <p class="font-semibold dark:text-white">Reward Hub</p>
                     </div>
                 </a>
                 <a href="{{ route('frontend.share.earn') }}"

@@ -62,12 +62,12 @@ class UserRolePermissionSeeder extends Seeder
         // Create User and assign Role to it.
 
         $superAdminUser = User::firstOrCreate([
-                    'email' => 'superadmin@gmail.com',
+                    'email' => 'admin@gmail.com',
                 ], [
-                    'name' => 'Super Admin',
-                    'email' => 'superadmin@gmail.com',
-                    'username' => 'superadmin',
-                    'password' => Hash::make ('superadmin@gmail.com'),
+                    'name' => 'Admin',
+                    'email' => 'admin@gmail.com',
+                    'username' => 'admin',
+                    'password' => Hash::make ('12345678'),
                     'email_verified_at' => now(),
                 ]);
 
@@ -80,23 +80,13 @@ class UserRolePermissionSeeder extends Seeder
             'first_name' => $superAdminUser->name,
         ]);
 
-        $adminUser = User::firstOrCreate([
-                            'email' => 'admin@gmail.com'
-                        ], [
-                            'name' => 'Admin',
-                            'username' => 'admin',
-                            'email' => 'admin@gmail.com',
-                            'password' => Hash::make ('admin@gmail.com'),
-                            'email_verified_at' => now(),
-                        ]);
-
-        $adminUser->assignRole($adminRole);
-
-        $adminUserProfile = $adminUser->profile()->firstOrCreate([
-            'user_id' => $adminUser->id,
+        $wallet = $superAdminUser->wallet()->firstOrCreate([
+            'user_id' => $superAdminUser->id,
         ], [
-            'user_id' => $adminUser->id,
-            'first_name' => $adminUser->name,
+            'user_id' => $superAdminUser->id,
+            'wallet_address' => 'WALLET-ADMIN1234',
+            'balance' => 0.00,
+            'status' => 'active',
         ]);
     }
 }

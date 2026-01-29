@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('provider_id')->nullable();
             $table->string('otp')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
-            $table->timestamp('otp_verified_at')->nullable();
             $table->timestamps();
             $table->softDeletes(); // This adds the 'deleted_at' column
         });

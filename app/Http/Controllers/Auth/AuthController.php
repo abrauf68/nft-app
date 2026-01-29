@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Mail\OTPVerifyMail;
+use App\Models\Transaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
@@ -35,69 +40,6 @@ class AuthController extends Controller
         }
     }
 
-    // public function verify_account(Request $request)
-    // {
-    //     // dd($request->code);
-    //     $validate = Validator::make($request->all(), [
-    //         'code' => 'required|min:4|max:20',
-    //     ]);
-
-    //     if ($validate->fails()) {
-    //         return Redirect::back()->withErrors($validate)->withInput($request->all())->with('error', 'Validation Error!');
-    //     }
-    //     try {
-    //         $user = User::where('email', Auth::user()->email)->where('verification_code', $request->code)->first();
-    //         if ($user) {
-    //             // User Found
-    //             $user->verification_status = 1;
-    //             $user->code_resend_count = 0;
-    //             $user->save();
-    //             return redirect()->route('dashboard')->with('success', 'Your Account Has Been Verified');
-    //         } else {
-    //             return redirect()->back()->withInput($request->all())->with('error', "Please Enter Valid Code");
-    //         }
-    //     } catch (\Throwable $th) {
-    //         // throw $th;
-    //         return redirect()->back()->withInput($request->all())->with('error', "Request Failed:" . $th->getMessage());
-    //     }
-    // }
-
-    // public function resend_code()
-    // {
-    //     try {
-    //         if (Auth::check()) {
-
-    //             $user = User::find(Auth::user()->id);
-    //             $user->verification_code = random_int(10000, 999999);
-    //             $user->code_resend_count = $user->code_resend_count+1;
-    //             $user->save();
-
-    //             $details = [
-    //                 'email' => $user->email,
-    //                 'title' => 'Mail from '. \App\Helpers\Helper::getCompanyName(),
-    //                 'url' => route('login.verification'),
-    //                 'body' => 'Here is your login verification code:',
-    //                 'verification_code' => $user->verification_code
-    //             ];
-
-    //             dispatch(new SendVerificationCodeEmailJob($details));
-
-    //             return response()->json([
-    //                 'message' => "Verfication code has been updated"
-    //             ]);
-    //         } else {
-    //             return response()->json([
-    //                 'error' => 'Authentication Error, please try again!'
-    //             ],400);
-    //         }
-    //     }catch(Exception $e) {
-    //         return response()->json([
-    //             'message' => $e->getMessage()
-    //         ]);
-    //         // dd($e->getMessage());
-    //     }
-    // }
-
     public function verification_verify(EmailVerificationRequest $request)
     {
         $request->fulfill();
@@ -122,5 +64,92 @@ class AuthController extends Controller
     {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('message', 'Verification link sent!');
+    }
+
+    public function verification()
+    {
+        return view('frontend.auth.verification-page');
+    }
+    public function resendOTP()
+    {
+        try {
+            if (Auth::check()) {
+
+                $user = User::find(Auth::user()->id);
+                // Check if previous OTP is still valid
+                if ($user->otp_expires_at && Carbon::now()->lessThan($user->otp_expires_at)) {
+                    return redirect()->back()->with('error', 'Previous OTP is still valid. Please wait before requesting a new one.');
+                }
+                do {
+                    $otp = rand(1000, 9999);
+                } while (User::where('otp', $otp)->exists());
+                $user->otp = $otp;
+                $user->otp_expires_at = Carbon::now()->addMinutes(10); // OTP valid for 10 minutes
+                $user->save();
+
+                $subject = 'Resend OTP Verification Code';
+
+                // ✅ Send OTP email
+                Mail::to($user->email)->send(new OTPVerifyMail($user, $otp, $subject));
+
+                return redirect()->back()->with('success', 'OTP has been resent successfully!');
+            } else {
+                return redirect()->route('login')->with('error', 'Authentication Error, please try again!');
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', "Request Failed:" . $e->getMessage());
+        }
+    }
+
+    public function verifyOTP(Request $request)
+    {
+        try {
+            $otp = implode('', $request->input('otp')); // combine array into string
+            $user = User::findOrFail(Auth::id());
+
+            // Parse OTP expiry as Carbon
+            $expiresAt = Carbon::parse($user->otp_expires_at);
+
+            // Check if OTP is expired first
+            if (Carbon::now()->greaterThan($expiresAt)) {
+                return back()->withErrors(['otp' => 'OTP has been expired.']);
+            }
+
+            // Check OTP match
+            if ($otp != $user->otp) {
+                return back()->withErrors(['otp' => 'Invalid OTP']);
+            }
+
+            // OTP is correct and not expired
+            $user->email_verified_at = now();
+            $user->otp = null;
+            $user->otp_expires_at = null;
+            $user->save();
+
+            if($user->inviter_id){
+                $referralBonus = Helper::getReferralBonus();
+                $inviter = User::find($user->inviter_id);
+                if($inviter){
+                    $inviterWallet = $inviter->wallet;
+                    if($inviterWallet){
+                        $inviterWallet->balance += $referralBonus;
+                        $inviterWallet->save();
+
+                        // Log the transaction
+                        Transaction::create([
+                            'user_id' => $inviter->id,
+                            'money_flow' => 'in',
+                            'transaction_type' => 'referral_bonus',
+                            'amount' => $referralBonus,
+                            'transaction_id' => uniqid('txn_'),
+                            'description' => 'Referral bonus for inviting user: ' . $user->email,
+                        ]);
+                    }
+                }
+            }
+            return redirect()->route('frontend.home')->with('success', 'Your email has been verified successfully!');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', "Something went wrong! Please try again later");
+        }
     }
 }

@@ -18,12 +18,13 @@ return new class extends Migration
             $table->string('max_upload_size')->nullable();
             $table->string('currency_symbol')->nullable();
             $table->enum('currency_symbol_position',['prefix', 'postfix'])->default('prefix');
+            $table->decimal('referral_bonus', 15, 2);
             $table->foreignIdFor(Language::class)->nullable()
                 ->constrained()
                 ->cascadeOnDelete();
             $table->foreignIdFor(Timezone::class)->nullable()
                 ->constrained()
-                ->cascadeOnDelete();  
+                ->cascadeOnDelete();
             $table->string('footer_text')->nullable();
             $table->timestamps();
         });

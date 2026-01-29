@@ -77,10 +77,10 @@ class Helper
         $position = $currencySetting->currency_symbol_position; // 'prefix' or 'postfix'
 
         if ($position === 'prefix') {
-            return $symbol . $amount;
+            return $symbol . number_format($amount, 2);
         }
 
-        return $amount . $symbol;
+        return number_format($amount, 2) . $symbol;
     }
 
     public static function renderRecaptcha($formId, $action = 'register')
@@ -121,5 +121,25 @@ class Helper
                 });
             </script>
         HTML;
+    }
+
+    public static function generateUniqueWalletAddress()
+    {
+        do {
+            $address = 'WALLET-' . strtoupper(bin2hex(random_bytes(8)));
+        } while (\App\Models\Wallet::where('wallet_address', $address)->exists());
+
+        return $address;
+    }
+
+    public static function getReferralBonus()
+    {
+        $systemSetting = SystemSetting::first();
+        return $systemSetting->referral_bonus ?? 0.00;
+    }
+
+    public static function userReferralsCount($userId)
+    {
+        return User::where('inviter_id', $userId)->count();
     }
 }

@@ -15,7 +15,7 @@
                 <i class="ph ph-bank"></i>
             </div>
             <div class="">
-                <p class="text-2xl font-semibold text-white">$0.00</p>
+                <p class="text-2xl font-semibold text-white">{{ \App\Helpers\Helper::formatCurrency(Auth::user()->wallet->balance ?? 0) }}</p>
                 <p class="text-xs text-bgColor5">Current Balance</p>
             </div>
         </div>

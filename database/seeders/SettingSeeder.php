@@ -29,6 +29,7 @@ class SettingSeeder extends Seeder
             'max_upload_size' => '2048',
             'currency_symbol' => '$',
             'currency_symbol_position' => 'prefix',
+            'referral_bonus' => 10.00,
             'footer_text' => 'All Copyrights Reserved',
         ]);
 

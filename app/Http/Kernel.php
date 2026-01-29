@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check.activation' => CheckAccountActivation::class,
         'locale' => LocaleMiddleware::class,
+        'otp.verify' => \App\Http\Middleware\OTPVerificationMiddleware::class,
     ];
 }

@@ -18,6 +18,7 @@ use App\Http\Controllers\Frontend\NotificationController as FrontendNotification
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
 use App\Http\Controllers\Frontend\WalletController;
 use App\Http\Controllers\Frontend\WithdrawController;
+use App\Http\Controllers\Frontend\RewardController;
 use App\Http\Middleware\CheckAccountActivation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -102,9 +103,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('email/verify', [AuthController::class, 'verification_notice'])->name('verification.notice');
     Route::post('email/verification-notification', [AuthController::class, 'verification_send'])->middleware(['throttle:2,1'])->name('verification.send');
     // Verified notification
+
+    Route::get('/verification', [AuthController::class, 'verification'])->name('otp.verification');
+    Route::get('/resend/otp', [AuthController::class, 'resendOTP'])->name('resend.otp');
+    Route::post('/verify/otp', [AuthController::class, 'verifyOTP'])->name('verify.otp');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'otp.verify'])->group(function () {
     Route::get('/deactivated', function () {
         return view('errors.deactivated');
     })->name('deactivated');
@@ -154,8 +159,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Frontend Pages Routes
 Route::name('frontend.')->group(function () {
-    Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/home', [FrontendHomeController::class, 'home'])->name('home');
+    Route::middleware(['auth', 'otp.verify'])->group(function () {
+        Route::get('/', [FrontendHomeController::class, 'home'])->name('home');
         Route::get('share-and-earn', [FrontendHomeController::class, 'shareEarn'])->name('share.earn');
         Route::get('user/profile', [FrontendProfileController::class, 'index'])->name('profile');
         Route::get('user/wallet', [WalletController::class, 'index'])->name('wallet');
@@ -182,6 +187,9 @@ Route::name('frontend.')->group(function () {
         Route::get('help-center/contact', [FrontendHomeController::class, 'contact'])->name('contact');
 
         Route::get('request-withdraw', [WithdrawController::class, 'index'])->name('request-withdraw');
+
+        Route::get('rewards', [RewardController::class, 'index'])->name('rewards');
+        Route::get('reward/{id}/claim', [RewardController::class, 'claimReward'])->name('reward.claim');
     });
 });
 

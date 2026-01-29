@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Mail\OTPVerifyMail;
 use App\Models\Profile;
 use App\Models\User;
+use App\Models\Wallet;
+use Carbon\Carbon;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -13,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -36,7 +40,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
             'confirm-password' => 'required|same:password',
-            'invitation_code' => 'required|string|max:255|exists:users,username',
+            'invitation_code' => 'nullable|string|max:255|exists:users,username',
             'terms' => 'required|string|max:255',
         ];
 
@@ -57,7 +61,7 @@ class RegisterController extends Controller
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
-            $user->email_verified_at = now();
+            // $user->email_verified_at = now();
             $user->password = Hash::make($request->password);
 
 
@@ -86,20 +90,35 @@ class RegisterController extends Controller
             $profile->profile_image = "frontAssets/images/avatars/{$randomNumber}.png";
             $profile->save();
 
+            $wallet = new Wallet();
+            $wallet->user_id = $user->id;
+            $wallet->wallet_address = Helper::generateUniqueWalletAddress();
+            $wallet->balance = 0.00;
+            $wallet->status = 'active';
+            $wallet->save();
+
             // Attempt to authenticate
             Auth::attempt(['email' => $request->email, 'password' => $request->password]);
 
-            // if (Auth::check()) {
 
-            //     VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
-            //         return (new MailMessage)
-            //             ->subject('Verify Email Address')
-            //             ->line('Click the button below to verify your email address.')
-            //             ->action('Verify Email Address', $url);
-            //     });
-            // }
+            if (Auth::check()) {
+                do {
+                    $otp = rand(1000, 9999);
+                } while (User::where('otp', $otp)->exists());
+
+                // Save OTP to user record
+                $user->otp = $otp;
+                $user->otp_expires_at = Carbon::now()->addMinutes(10); // OTP valid for 10 minutes
+                $user->save();
+
+                $subject = 'Verify Your Email Address';
+
+                // ✅ Send OTP email
+                Mail::to($user->email)->send(new OTPVerifyMail($user, $otp, $subject));
+
+
+            }
             app('notificationService')->notifyUsers([$user], 'Registered Successfully' ,'Welcome to ' . Helper::getCompanyName());
-            // $user->sendEmailVerificationNotification();
 
             // Commit the transaction
             DB::commit();
@@ -139,4 +158,19 @@ class RegisterController extends Controller
     //     $randomNumber = rand(1000, 999999);
     //     return $firstThreeLetters . $randomNumber;
     // }
+
+
+    public function checkInvitationCode(Request $request)
+    {
+        $invitationCode = $request->invitation_code;
+        $user = User::where('username', $invitationCode)->first();
+        if ($user) {
+            return response()->json([
+                'status' => 'matched',
+                'user' => $user,
+            ]);
+        } else {
+            return response()->json(['status' => 'not_matched']);
+        }
+    }
 }
