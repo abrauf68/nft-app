@@ -55,12 +55,13 @@
     @include('frontend.layouts.header')
     <!-- Bottom Tab End -->
 
-        <div class="hidden inset-0 z-50 withdrawModal">
+    <div class="hidden inset-0 z-50 withdrawModal">
         <div class="bg-black opacity-40 absolute inset-0 container"></div>
         <div class="flex justify-end items-end flex-col h-full">
             <div class="container relative">
                 <img src="{{ asset('frontAssets/images/modal-bg-white.png') }}" alt="" class="dark:hidden" />
-                <img src="{{ asset('frontAssets/images/modal-bg-black.png') }}" alt="" class="hidden dark:block" />
+                <img src="{{ asset('frontAssets/images/modal-bg-black.png') }}" alt=""
+                    class="hidden dark:block" />
                 <div class="bg-white dark:bg-color1 relative z-40 overflow-auto pb-8">
                     <div class="flex justify-between items-center px-6 pt-10">
                         <p class="text-2xl text-color9 font-semibold dark:text-white">

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class OTPVerificationMiddleware
+class SuspiciousCheckMiddleware
 {
     /**
      * Handle an incoming request.
@@ -19,11 +19,6 @@ class OTPVerificationMiddleware
         if (Auth::check() && Auth::user()->is_suspicious === '1') {
             // Redirect to your verification page route
             return redirect()->route('suspicious'); // replace 'verification.page' with your route name
-        }
-        
-        if (Auth::check() && is_null(Auth::user()->email_verified_at)) {
-            // Redirect to your verification page route
-            return redirect()->route('otp.verification'); // replace 'verification.page' with your route name
         }
 
         return $next($request);

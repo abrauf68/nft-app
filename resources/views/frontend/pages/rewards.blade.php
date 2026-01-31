@@ -73,6 +73,9 @@
         }
 
         .reward-amount {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 6px;
             font-size: 12px;
             font-weight: 700;
@@ -150,18 +153,19 @@
                         <div class="reward-title">{{ $reward->title }}</div>
                         <div class="reward-desc">{{ $reward->short_description }}</div>
                         <div class="reward-amount">
-                            Earn ${{ $reward->reward_amount }}
+                            <span>
+                                Earn ${{ $reward->reward_amount }}
+                            </span>
+                            <!-- Action -->
+                            @if (in_array($reward->id, $userClaimedRewards))
+                                <div class="reward-claimed">✔ Claimed</div>
+                            @else
+                                <a href="{{ route('frontend.reward.claim', $reward->id) }}" class="reward-btn">
+                                    Claim
+                                </a>
+                            @endif
                         </div>
                     </div>
-
-                    <!-- Action -->
-                    @if (in_array($reward->id, $userClaimedRewards))
-                        <div class="reward-claimed">✔ Claimed</div>
-                    @else
-                        <a href="{{ route('frontend.reward.claim', $reward->id) }}" class="reward-btn">
-                            Claim
-                        </a>
-                    @endif
 
                 </div>
 

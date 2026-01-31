@@ -28,6 +28,9 @@ class DatabaseSeeder extends Seeder
             DesignationSeeder::class,
             TimezoneSeeder::class,
             SettingSeeder::class,
+            RewardSeeder::class,
+            FaqSeeder::class,
+            MiningMachineSeeder::class,
         ]);
     }
 }

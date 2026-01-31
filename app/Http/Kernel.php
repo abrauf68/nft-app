@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'check.activation' => CheckAccountActivation::class,
         'locale' => LocaleMiddleware::class,
         'otp.verify' => \App\Http\Middleware\OTPVerificationMiddleware::class,
+        'check.suspicious' => \App\Http\Middleware\SuspiciousCheckMiddleware::class,
     ];
 }

@@ -16,5 +16,9 @@ class Transaction extends Model
         'amount',
         'transaction_id',
         'description',
+        'currency',
+        'tx_hash',
+        'payment_id',
+        'status',
     ];
 }

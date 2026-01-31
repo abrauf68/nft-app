@@ -6,7 +6,7 @@
             </div>
             <p class="text-xs text-white font-semibold dark:text-color10">Home</p>
         </a>
-        <a href="" class="flex justify-center items-center text-center flex-col gap-1">
+        <a href="{{ route('frontend.mining') }}" class="flex justify-center items-center text-center flex-col gap-1">
             <div class="flex justify-center items-center p-3 rounded-full bg-white dark:bg-color10">
                 <i class="ph ph-hammer text-xl !leading-none dark:text-white"></i>
             </div>

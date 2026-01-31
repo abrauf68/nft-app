@@ -130,8 +130,7 @@
                     class="flex justify-between items-center py-3 px-4 border border-color21 rounded-xl dark:border-color18 gap-3 @error('phone_number') is-invalid @enderror">
                     <input type="text" placeholder="i.e. +92 310 0000000" name="phone_number"
                         value="{{ old('phone_number', $profile->phone_number) }}"
-                        class="outline-none bg-transparent text-n600 text-sm placeholder:text-sm w-full placeholder:text-bgColor18 dark:text-color18 dark:placeholder:text-color18"
-                        required />
+                        class="outline-none bg-transparent text-n600 text-sm placeholder:text-sm w-full placeholder:text-bgColor18 dark:text-color18 dark:placeholder:text-color18" />
                     <i class="ph ph-phone text-xl text-bgColor18 !leading-none"></i>
                 </div>
                 @error('phone_number')

@@ -7,28 +7,29 @@
             </button>
             <div class="bg-p2 text-white pt-8 pb-4 px-5">
                 <div class="flex justify-start items-center gap-3 pb-6 border-b border-color24 border-dashed">
-                    <img src="{{ asset(Auth::user()->profile->profile_image ?? 'frontAssets/images/user-img.png') }}" style="width: 50px; border: 2px dotted #FF710F; border-radius: 50px;" alt="" />
+                    <img src="{{ asset(Auth::user()->profile->profile_image ?? 'frontAssets/images/user-img.png') }}"
+                        style="width: 50px; border: 2px dotted #FF710F; border-radius: 50px;" alt="" />
                     <div class="">
                         <p class="text-2xl font-semibold">
                             {{ Auth::user()->name }} <i class="ph-fill ph-seal-check text-p1"></i>
                         </p>
                         <p class="text-xs">
-                            {{ '@'.Auth::user()->username }}
+                            {{ '@' . Auth::user()->username }}
                         </p>
                     </div>
                 </div>
                 <div class="flex justify-between items-center pt-6">
                     <div class="flex justify-start items-start gap-2">
                         <div class="flex justify-center items-center text-white rounded-full bg-p1 p-1.5">
-                            <i class="ph-fill ph-chart-bar"></i>
+                            <i class="ph-fill ph-users-three"></i>
                         </div>
                         <div class="">
                             <p class="text-xs">Referrals</p>
-                            <p class="text-base font-semibold">{{ \App\Helpers\Helper::userReferralsCount(Auth::user()->id) }}</p>
+                            <p class="text-base font-semibold">
+                                {{ \App\Helpers\Helper::userReferralsCount(Auth::user()->id) }}</p>
                         </div>
                     </div>
-                    <div
-                        class="h-8 w-px bg-[linear-gradient(180deg,rgba(255,255,255,0.00)_0%,rgba(255,255,255,0.99)_49.48%,rgba(255,255,255,0.00)_100%)]">
+                    <div class="h-8 w-px bg-[linear-gradient(180deg,rgba(255,255,255,0.00)_0%,rgba(255,255,255,0.99)_49.48%,rgba(255,255,255,0.00)_100%)]">
                     </div>
                     <div class="flex justify-start items-start gap-2">
                         <div class="flex justify-center items-center text-white rounded-full bg-p1 p-1.5">
@@ -36,7 +37,8 @@
                         </div>
                         <div class="">
                             <p class="text-xs">Total Earned</p>
-                            <p class="text-base font-semibold">{{ \App\Helpers\Helper::formatCurrency(Auth::user()->wallet->balance ?? 0) }}</p>
+                            <p class="text-base font-semibold">
+                                {{ \App\Helpers\Helper::formatCurrency(Auth::user()->wallet->balance ?? 0) }}</p>
                         </div>
                     </div>
                 </div>
@@ -70,29 +72,52 @@
                 <a href="{{ route('frontend.wallet') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
-                        <div class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
+                        <div
+                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
                             <i class="ph ph-wallet"></i>
                         </div>
                         <p class="font-semibold dark:text-white">My Wallet</p>
                     </div>
-                    <p class="text-p1 font-semibold text-sm">{{ \App\Helpers\Helper::formatCurrency(Auth::user()->wallet->balance ?? 0) }}</p>
+                    <p class="text-p1 font-semibold text-sm">
+                        {{ \App\Helpers\Helper::formatCurrency(Auth::user()->wallet->balance ?? 0) }}</p>
                 </a>
-                <a href="{{ route('frontend.request-withdraw') }}"
+                <a href="{{ route('frontend.withdraws') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
-                        <div class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
-                            <i class="ph ph-wallet"></i>
+                        <div
+                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
+                            <i class="ph ph-bank"></i>
                         </div>
                         <p class="font-semibold dark:text-white">Withdraw</p>
+                    </div>
+                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
+                        <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
                 <a href="{{ route('frontend.rewards') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
-                        <div class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
+                        <div
+                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
                             <i class="ph ph-medal"></i>
                         </div>
                         <p class="font-semibold dark:text-white">Reward Hub</p>
+                    </div>
+                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
+                        <i class="ph ph-arrow-right"></i>
+                    </div>
+                </a>
+                <a href="{{ route('frontend.transactions') }}"
+                    class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
+                    <div class="flex justify-start items-center gap-3">
+                        <div
+                            class="flex justify-center items-center p-2 rounded-full border bg-color16 border-color14 text-lg !leading-none text-p2 dark:bg-bgColor14 dark:border-bgColor16 dark:text-p1">
+                            <i class="ph ph-receipt"></i>
+                        </div>
+                        <p class="font-semibold dark:text-white">Transactions</p>
+                    </div>
+                    <div class="flex justify-center items-center rounded-full text-p2 dark:text-p1">
+                        <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
                 <a href="{{ route('frontend.share.earn') }}"
@@ -122,7 +147,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('frontend.settings')}}"
+                <a href="{{ route('frontend.settings') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div
@@ -148,7 +173,7 @@
                         <i class="ph ph-arrow-right"></i>
                     </div>
                 </a>
-                <a href="{{ route('frontend.faqs')}}"
+                <a href="{{ route('frontend.faqs') }}"
                     class="flex justify-between items-center py-3 px-4 border-b border-dashed border-color21 dark:bg-color1 dark:border-color24">
                     <div class="flex justify-start items-center gap-3">
                         <div

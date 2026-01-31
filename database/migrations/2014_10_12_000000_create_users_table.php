@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('provider_id')->nullable();
             $table->string('otp')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
+            $table->ipAddress('registration_ip')->nullable();
+            $table->string('device_fingerprint')->nullable();
+            $table->enum('is_suspicious', ['0', '1'])->default('0');
             $table->timestamps();
             $table->softDeletes(); // This adds the 'deleted_at' column
         });

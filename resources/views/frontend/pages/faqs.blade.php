@@ -19,21 +19,24 @@
     <!-- Search Box End -->
     <div class="pt-6">
         <div class="flex flex-col gap-2">
-            <div class="faq-accordion-area border border-color21 rounded-xl bg-white dark:bg-color9 cursor-pointer">
-                <div class="faq-accordion duration-500 flex justify-between items-center p-4">
-                    <h6 class="text-sm font-semibold">How to start playing?</h6>
-                    <div class="">
-                        <i class="ph-fill ph-caret-down ti-plus"> </i>
+            @if (isset($faqs) && count($faqs) > 0)
+                @foreach ($faqs as $faq)
+                    <div class="faq-accordion-area border border-color21 rounded-xl bg-white dark:bg-color9 cursor-pointer">
+                        <div class="faq-accordion duration-500 flex justify-between items-center p-4">
+                            <h6 class="text-sm font-semibold">{{ $faq->question }}</h6>
+                            <div class="">
+                                <i class="ph-fill ph-caret-down ti-plus"> </i>
+                            </div>
+                        </div>
+                        <div class="duration-500 h-0 overflow-hidden">
+                            <p class="text-xs text-n500 border-t border-dashed border-n50 pt-3 mx-4 pb-4">
+                                {{ $faq->answer }}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div class="duration-500 h-0 overflow-hidden">
-                    <p class="text-xs text-n500 border-t border-dashed border-n50 pt-3 mx-4 pb-4">
-                        Begin by selecting a quiz category, then tap 'Start' to delve
-                        into an engaging learning experience.
-                    </p>
-                </div>
-            </div>
-            <div class="faq-accordion-area border border-color21 rounded-xl bg-white dark:bg-color9 cursor-pointer">
+                @endforeach
+            @endif
+            {{-- <div class="faq-accordion-area border border-color21 rounded-xl bg-white dark:bg-color9 cursor-pointer">
                 <div class="faq-accordion duration-500 flex justify-between items-center p-4">
                     <h6 class="text-sm font-semibold">
                         Available quiz categories?
@@ -106,7 +109,7 @@
                         into an engaging learning experience.
                     </p>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection

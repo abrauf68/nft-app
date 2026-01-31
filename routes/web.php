@@ -14,6 +14,7 @@ use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\User\ArchivedUserController;
 use App\Http\Controllers\Dashboard\User\UserController;
 use App\Http\Controllers\Frontend\HomeController as FrontendHomeController;
+use App\Http\Controllers\Frontend\MiningController;
 use App\Http\Controllers\Frontend\NotificationController as FrontendNotificationController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
 use App\Http\Controllers\Frontend\WalletController;
@@ -104,12 +105,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('email/verification-notification', [AuthController::class, 'verification_send'])->middleware(['throttle:2,1'])->name('verification.send');
     // Verified notification
 
+    Route::get('/account/suspicious', [AuthController::class, 'suspicious'])->name('suspicious');
+    Route::get('/appeal', [AuthController::class, 'appeal'])->name('appeal');
+    Route::post('/appeal/submit', [AuthController::class, 'appealSubmit'])->name('appeal.submit');
+    Route::get('/appeal/submission/success', [AuthController::class, 'appealSuccess'])->name('appeal.submit.success');
     Route::get('/verification', [AuthController::class, 'verification'])->name('otp.verification');
     Route::get('/resend/otp', [AuthController::class, 'resendOTP'])->name('resend.otp');
     Route::post('/verify/otp', [AuthController::class, 'verifyOTP'])->name('verify.otp');
 });
 
-Route::middleware(['auth', 'otp.verify'])->group(function () {
+Route::middleware(['auth', 'otp.verify', 'check.suspicious'])->group(function () {
     Route::get('/deactivated', function () {
         return view('errors.deactivated');
     })->name('deactivated');
@@ -159,7 +164,7 @@ Route::middleware(['auth', 'otp.verify'])->group(function () {
 
 // Frontend Pages Routes
 Route::name('frontend.')->group(function () {
-    Route::middleware(['auth', 'otp.verify'])->group(function () {
+    Route::middleware(['auth', 'otp.verify', 'check.suspicious'])->group(function () {
         Route::get('/', [FrontendHomeController::class, 'home'])->name('home');
         Route::get('share-and-earn', [FrontendHomeController::class, 'shareEarn'])->name('share.earn');
         Route::get('user/profile', [FrontendProfileController::class, 'index'])->name('profile');
@@ -172,25 +177,44 @@ Route::name('frontend.')->group(function () {
         Route::get('notifications', [FrontendNotificationController::class, 'index'])->name('notifications.index');
 
         Route::get('notifications/{id}/mark-as-read', [FrontendNotificationController::class, 'markAsRead'])
-            ->name('notifications.markAsRead');
+        ->name('notifications.markAsRead');
 
         Route::get('notifications/mark-all-as-read', [FrontendNotificationController::class, 'markAllAsRead'])
-            ->name('notifications.markAllAsRead');
+        ->name('notifications.markAllAsRead');
 
         Route::get('notifications/{id}/delete', [FrontendNotificationController::class, 'deleteNotification'])
-            ->name('notifications.delete');
+        ->name('notifications.delete');
 
         Route::get('notifications/delete-all', [FrontendNotificationController::class, 'deleteAllNotifications'])
-            ->name('notifications.deleteAll');
+        ->name('notifications.deleteAll');
 
         Route::get('help-center/faqs', [FrontendHomeController::class, 'faqs'])->name('faqs');
         Route::get('help-center/contact', [FrontendHomeController::class, 'contact'])->name('contact');
 
-        Route::get('request-withdraw', [WithdrawController::class, 'index'])->name('request-withdraw');
-
         Route::get('rewards', [RewardController::class, 'index'])->name('rewards');
         Route::get('reward/{id}/claim', [RewardController::class, 'claimReward'])->name('reward.claim');
+
+        Route::get('/wallet/add', [WalletController::class, 'add'])->name('wallet.add');
+        Route::post('/wallet/crypto', [WalletController::class, 'createCryptoPayment'])->name('wallet.add-crypto');
+
+        Route::get('/transactions', [FrontendHomeController::class, 'transactions'])->name('transactions');
+
+        Route::get('withdraws', [WithdrawController::class, 'index'])->name('withdraws');
+        Route::get('/withdraw/request', [WithdrawController::class, 'request'])->name('withdraw.request');
+        Route::post('/withdraw/request/submit', [WithdrawController::class, 'requestSubmit'])->name('withdraw.request.submit');
+        Route::get('/withdraw/preview/{id}', [WithdrawController::class, 'preview'])->name('withdraw.preview');
+
+        Route::get('/mining', [MiningController::class, 'index'])->name('mining');
+        Route::get('/mining/{slug}', [MiningController::class, 'show'])->name('mining.show');
     });
+
+    Route::post('/crypto/webhook', [WalletController::class, 'handle'])
+    ->name('crypto.webhook');
+});
+
+
+Route::fallback(function () {
+    return redirect()->route('frontend.home'); // Redirect to home page
 });
 
 

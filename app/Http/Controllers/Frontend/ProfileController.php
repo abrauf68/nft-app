@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
+use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -15,7 +17,11 @@ class ProfileController extends Controller
     public function index()
     {
         try {
-            return view('frontend.pages.profile');
+            $wallet = Wallet::where('user_id', auth()->id())->first();
+            $totalReferrals = User::where('inviter_id', auth()->id())->count();
+            $depositAmount = Transaction::where('user_id', auth()->id())->where('money_flow', 'in')->where('transaction_type', 'deposit')->where('status', 'completed')->sum('amount');
+            $withdrawalAmount = Transaction::where('user_id', auth()->id())->where('money_flow', 'out')->where('transaction_type', 'withdrawal')->where('status', 'completed')->sum('amount');
+            return view('frontend.pages.profile', compact('wallet', 'totalReferrals', 'depositAmount', 'withdrawalAmount'));
         } catch (\Throwable $th) {
             //throw $th;
             Log::error('Error loading profile page: ' . $th->getMessage());
@@ -38,7 +44,7 @@ class ProfileController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:255',
+            'phone_number' => 'nullable|string|max:255',
             'profile_picture' => 'required|string|max:255',
         ];
         $validate = Validator::make($request->all(), $rules);

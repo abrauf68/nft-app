@@ -31,7 +31,7 @@
     <div
         class="flex justify-between items-center gap-6 bg-white py-3 px-5 border border-color21 dark:border-color24 rounded-2xl dark:bg-color9">
         <div class="">
-            <p class="text-p2 font-semibold dark:text-p1">820.00$</p>
+            <p class="text-p2 font-semibold dark:text-p1">{{ \App\Helpers\Helper::formatCurrency($wallet->balance ?? 0) }}</p>
             <p class="text-xs text-nowrap">Total Earning</p>
         </div>
         <div class="border-t border-color21 border-dashed dark:border-color24 w-full"></div>
@@ -51,15 +51,15 @@
                 <i class="ph ph-users-three"></i>
             </div>
             <p class="text-sm font-semibold text-white pt-2">Referred users</p>
-            <p class="font-semibold text-white">12</p>
+            <p class="font-semibold text-white">{{ $totalReferrals }}</p>
         </div>
         <img src="{{ asset('frontAssets/images/bg-vector.png') }}" alt="" />
         <div class="flex flex-col justify-center items-center">
             <div class="flex justify-center items-center text-p2 dark:text-p1 bg-white p-2 rounded-full text-xl">
                 <i class="ph ph-star"></i>
             </div>
-            <p class="text-sm font-semibold text-white pt-2">Total Earning</p>
-            <p class="font-semibold text-white">200$</p>
+            <p class="text-sm font-semibold text-white pt-2">Deposit</p>
+            <p class="font-semibold text-white">{{ \App\Helpers\Helper::formatCurrency($depositAmount ?? 0) }}</p>
         </div>
         <img src="{{ asset('frontAssets/images/bg-vector.png') }}" alt="" />
         <div class="flex flex-col justify-center items-center">
@@ -67,7 +67,7 @@
                 <i class="ph ph-bank"></i>
             </div>
             <p class="text-sm font-semibold text-white pt-2">Withdrawals</p>
-            <p class="font-semibold text-white">$62</p>
+            <p class="font-semibold text-white">{{ \App\Helpers\Helper::formatCurrency($withdrawalAmount ?? 0) }}</p>
         </div>
     </div>
 @endsection

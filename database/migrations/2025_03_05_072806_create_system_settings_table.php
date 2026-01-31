@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('currency_symbol')->nullable();
             $table->enum('currency_symbol_position',['prefix', 'postfix'])->default('prefix');
             $table->decimal('referral_bonus', 15, 2);
+            $table->decimal('minimum_deposit', 15, 2);
+            $table->decimal('minimum_withdraw', 15, 2);
             $table->foreignIdFor(Language::class)->nullable()
                 ->constrained()
                 ->cascadeOnDelete();

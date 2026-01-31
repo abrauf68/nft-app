@@ -30,6 +30,8 @@ class SettingSeeder extends Seeder
             'currency_symbol' => '$',
             'currency_symbol_position' => 'prefix',
             'referral_bonus' => 10.00,
+            'minimum_deposit' => 10.00,
+            'minimum_withdraw' => 10.00,
             'footer_text' => 'All Copyrights Reserved',
         ]);
 

@@ -1,8 +1,155 @@
 @extends('frontend.layouts.share.master')
 
-@section('title', 'Request Withdraw')
+@section('title', 'Withdraws')
 
 @section('css')
+    <style>
+        /* ---------------------------------------------
+               Status badges
+            --------------------------------------------- */
+        .bg-green-100 {
+            background-color: #dcfce7;
+        }
+
+        .text-green-700 {
+            color: #15803d;
+        }
+
+        .bg-yellow-100 {
+            background-color: #fef3c7;
+        }
+
+        .text-yellow-700 {
+            color: #b45309;
+        }
+
+        .bg-red-100 {
+            background-color: #fee2e2;
+        }
+
+        .text-red-700 {
+            color: #b91c1c;
+        }
+
+        .bg-gray-100 {
+            background-color: #f3f4f6;
+        }
+
+        .text-gray-700 {
+            color: #374151;
+        }
+
+        /* ---------------------------------------------
+               Withdraw card
+            --------------------------------------------- */
+        .withdraw-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .withdraw-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #f59e0b;
+        }
+
+        .withdraw-left {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .withdraw-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f59e0b;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .withdraw-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .withdraw-info p {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        /* Amount */
+        .amount-out {
+            color: #dc2626;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Pagination */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 24px;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-wrapper a,
+        .pagination-wrapper span {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .pagination-wrapper a {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .pagination-wrapper a:hover {
+            background-color: #f59e0b;
+            color: #ffffff;
+        }
+
+        .pagination-wrapper .active {
+            background-color: #f59e0b;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .pagination-wrapper .disabled {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #f59e0b;
+            margin-bottom: 12px;
+        }
+    </style>
 @endsection
 
 @section('breadcrumb-items')
@@ -16,13 +163,14 @@
                 <i class="ph ph-bank"></i>
             </div>
             <div class="text-white">
-                <p class="text-2xl font-semibold">$0.00</p>
+                <p class="text-2xl font-semibold">{{ \App\Helpers\Helper::formatCurrency($wallet->balance ?? 0) }}</p>
                 <p class="text-xs">Current Balance</p>
             </div>
         </div>
-        <button class="bg-white text-color9 py-2 px-5 rounded-xl font-semibold text-xs withdrawModalOpenButton">
+        <a href="{{ route('frontend.withdraw.request') }}"
+            class="bg-white text-color9 py-2 px-5 rounded-xl font-semibold text-xs">
             Withdraw
-        </button>
+        </a>
     </div>
 
     <div class="px-5 py-7 mt-14 bg-p2 flex justify-between items-center rounded-2xl gap-3">
@@ -34,74 +182,63 @@
                 <p class="text-xs">Do you have a question about the balance?</p>
             </div>
         </div>
-        <a href="{{ route('frontend.faqs') }}" class="bg-white text-p1 py-2 px-5 rounded-xl font-semibold text-xs text-nowrap">
+        <a href="{{ route('frontend.faqs') }}"
+            class="bg-white text-p1 py-2 px-5 rounded-xl font-semibold text-xs text-nowrap">
             Get Help</a>
     </div>
+    <div class="bg-white dark:bg-color10 py-6 px-5 rounded-xl border border-color21 mt-6">
 
-    <div class="p-6 bg-white border-color21 dark:border-color24 dark:bg-color10 rounded-2xl flex flex-col gap-5 mt-14">
-        <div class="flex justify-start items-center gap-3 pb-5 border-b border-color21 dark:border-color24 border-dashed">
-            <div
-                class="flex justify-center items-center p-3.5 rounded-full bg-color16 border-color14 dark:bg-bgColor14 dark:border-bgColor16 border text-p2 dark:text-p1 text-2xl !leading-none">
-                <i class="ph ph-currency-circle-dollar"></i>
-            </div>
-            <div class="">
-                <p class="text-sm font-semibold">Amount Added</p>
-                <p class="text-2xl font-semibold text-p2">$0.00</p>
-            </div>
+        {{-- Heading --}}
+        <div class="flex items-center gap-2 mb-5">
+            <i class="ph ph-bank text-p1 text-lg"></i>
+            <h2 class="text-lg font-semibold dark:text-white">My Withdrawals</h2>
         </div>
-        <div class="flex justify-start items-center gap-3 pb-5 border-b border-color21 dark:border-color24 border-dashed">
-            <div
-                class="flex justify-center items-center p-3.5 rounded-full bg-color16 border-color14 dark:bg-bgColor14 dark:border-bgColor16 border text-p2 dark:text-p1 text-2xl !leading-none">
-                <i class="ph ph-currency-circle-dollar"></i>
+
+        @if ($withdraws->count() > 0)
+            <div class="flex flex-col gap-3">
+                @foreach ($withdraws as $wd)
+                    <div class="withdraw-card"
+                        onclick="window.location='{{ route('frontend.withdraw.preview', ['id' => $wd->id]) }}'">
+                        {{-- Left --}}
+                        <div class="withdraw-left">
+                            <div class="withdraw-icon">
+                                <i class="ph ph-arrow-up"></i>
+                            </div>
+                            <div class="withdraw-info">
+                                <p class="font-semibold">{{ \App\Helpers\Helper::formatCurrency($wd->amount) }}</p>
+                                <p class="text-color5">{{ $wd->crypto }} - {{ $wd->wallet_address }}</p>
+                                <p class="text-color5 text-xs">{{ $wd->created_at->format('d M Y • h:i A') }}</p>
+                            </div>
+                        </div>
+
+                        {{-- Right --}}
+                        <div class="text-right">
+                            <span
+                                class="inline-block mt-1 px-3 py-1 text-xs rounded-full
+                            {{ $wd->status == 'approved' ? 'bg-green-100 text-green-700' : '' }}
+                            {{ $wd->status == 'pending' ? 'bg-yellow-100 text-yellow-700' : '' }}
+                            {{ $wd->status == 'rejected' ? 'bg-red-100 text-red-700' : '' }}">
+                                {{ ucfirst($wd->status) }}
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-            <div class="">
-                <p class="text-sm font-semibold">Mined Amount</p>
-                <p class="text-2xl font-semibold text-p2">$0.00</p>
+
+            {{-- Pagination --}}
+            <div class="pagination-wrapper mt-6">
+                {{ $withdraws->links() }}
             </div>
-        </div>
-        <div class="flex justify-start items-center gap-3 pb-5 border-b border-color21 dark:border-color24 border-dashed">
-            <div
-                class="flex justify-center items-center p-3.5 rounded-full bg-color16 border-color14 dark:bg-bgColor14 dark:border-bgColor16 border text-p2 dark:text-p1 text-2xl !leading-none">
-                <i class="ph ph-currency-circle-dollar"></i>
+        @else
+            <div class="empty-state">
+                <i class="ph ph-wallet"></i>
+                <p class="text-sm font-semibold">No withdrawals found</p>
+                <p class="text-xs mt-1 max-w-md mx-auto text-color5">
+                    All your withdrawal requests will appear here.
+                </p>
             </div>
-            <div class="">
-                <p class="text-sm font-semibold">Referral Bonus</p>
-                <p class="text-2xl font-semibold text-p2">$0.00</p>
-            </div>
-        </div>
-    </div>
-    <div class="p-6 bg-white border-color21 dark:border-color24 dark:bg-color10 rounded-2xl flex flex-col gap-5 mt-8">
-        <div class="flex justify-between items-center border-b border-color21 dark:border-color24 border-dashed pb-5">
-            <div class="flex justify-start items-center gap-3">
-                <div
-                    class="flex justify-center items-center p-3.5 rounded-full bg-color16 border-color14 dark:bg-bgColor14 dark:border-bgColor16 border text-p2 dark:text-p1 text-2xl !leading-none">
-                    <i class="ph ph-currency-circle-dollar"></i>
-                </div>
-                <p class="text-sm font-semibold">My Transection</p>
-            </div>
-            <a href=""
-                class="p-2 bg-color16 border-color14 dark:bg-bgColor14 dark:border-bgColor16 border flex justify-center items-center rounded-full">
-                <i class="ph ph-caret-right"></i>
-            </a>
-        </div>
-        <div class="flex justify-between items-center gap-4">
-            <div class="flex justify-start items-center gap-3">
-                <div
-                    class="flex justify-center items-center p-3.5 rounded-full bg-color16 border-color14 dark:bg-bgColor14 dark:border-bgColor16 border text-p2 dark:text-p1 text-2xl !leading-none">
-                    <i class="ph ph-currency-circle-dollar"></i>
-                </div>
-                <div class="">
-                    <p class="text-sm font-semibold">Refer & Earn</p>
-                    <p class="text-xs pt-1">
-                        Invite 40 friends and collect bonous upto $50
-                    </p>
-                </div>
-            </div>
-            <a href="{{ route('frontend.share.earn') }}"
-                class="p-2 bg-color16 border-color14 dark:bg-bgColor14 dark:border-bgColor16 border flex justify-center items-center rounded-full">
-                <i class="ph ph-caret-right"></i>
-            </a>
-        </div>
+        @endif
+
     </div>
 @endsection
 

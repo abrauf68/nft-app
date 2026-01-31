@@ -137,6 +137,16 @@ class Helper
         $systemSetting = SystemSetting::first();
         return $systemSetting->referral_bonus ?? 0.00;
     }
+    public static function minimumDeposit()
+    {
+        $systemSetting = SystemSetting::first();
+        return $systemSetting->minimum_deposit ?? 0.00;
+    }
+    public static function minimumWithdraw()
+    {
+        $systemSetting = SystemSetting::first();
+        return $systemSetting->minimum_withdraw ?? 0.00;
+    }
 
     public static function userReferralsCount($userId)
     {

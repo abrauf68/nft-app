@@ -37,6 +37,7 @@
     <!-- Sign In Form Start -->
     <form action="{{ route('register.attempt') }}" method="POST" class="relative z-20">
         @csrf
+        <input type="hidden" name="device_fingerprint" id="device_fingerprint">
         <div class="bg-white py-8 px-6 rounded-xl mt-12 dark:bg-color10">
             <div class="flex justify-between items-center">
                 <a href="{{ route('login') }}"
@@ -115,7 +116,7 @@
                     class="flex justify-between items-center py-3 px-4 border border-color21 rounded-xl dark:border-color18 gap-3 @error('invitation_code') is-invalid @enderror">
                     <input type="text" placeholder="Enter invitation code" id="invitation_code" name="invitation_code"
                         value="{{ old('invitation_code', request('code')) }}"
-                        class="outline-none bg-transparent text-n600 text-sm placeholder:text-sm w-full placeholder:text-bgColor18 dark:text-color18 dark:placeholder:text-color18"/>
+                        class="outline-none bg-transparent text-n600 text-sm placeholder:text-sm w-full placeholder:text-bgColor18 dark:text-color18 dark:placeholder:text-color18" />
                     <i id="invitation_icon" class="ph ph-user text-xl text-bgColor18 !leading-none"></i>
                 </div>
                 <div id="invitation_code_feedback" class="mt-2"></div>
@@ -171,6 +172,13 @@
 
 @section('script')
     <script type="text/javascript">
+        document.getElementById('device_fingerprint').value = btoa(
+            navigator.userAgent +
+            screen.width +
+            screen.height +
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+        );
+
         $(document).ready(function() {
 
             let typingTimer = null;
@@ -213,7 +221,7 @@
                             $wrapper.removeClass('input-success input-danger');
                             $icon.removeClass(
                                 'icon-success icon-danger ph-user ph-check-circle ph-x-circle'
-                                );
+                            );
 
                             if (response.status === 'matched') {
                                 // ✅ Success UI

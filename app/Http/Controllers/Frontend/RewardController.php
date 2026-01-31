@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Reward;
 use App\Models\Transaction;
@@ -56,6 +57,8 @@ class RewardController extends Controller
                     'amount' => $reward->reward_amount,
                     'transaction_id' => uniqid('txn_'),
                     'description' => 'Reward claimed: ' . $reward->title,
+                    'currency' => 'USD',
+                    'status' => 'completed',
                 ]);
 
                 $userWallet = $user->wallet;
@@ -63,6 +66,16 @@ class RewardController extends Controller
                     $userWallet->balance += $reward->reward_amount;
                     $userWallet->save();
                 }
+
+                // Send notification to the user
+                app('notificationService')->notifyUsers(
+                    [$user],
+                    'Reward Claimed!',
+                    "You successfully claimed the reward '{$reward->title}' and received " . Helper::formatCurrency($reward->reward_amount) . " in your account.",
+                    'rewards',
+                    $reward->id,
+                    'rewards'
+                );
             }
 
             // Redirect user to external reward page
