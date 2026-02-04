@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->enum('money_flow', ['in', 'out'])->default('in');
-            $table->enum('transaction_type', ['deposit', 'withdrawal', 'transfer', 'referral_bonus', 'reward','mined'])->default('deposit');
+            $table->enum('transaction_type', ['deposit', 'withdrawal', 'transfer', 'referral_bonus', 'reward', 'mined', 'purchase'])->default('deposit');
             $table->decimal('amount', 15, 2);
             $table->string('transaction_id')->unique();
             $table->text('description')->nullable();

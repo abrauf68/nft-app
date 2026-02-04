@@ -79,7 +79,7 @@
                 </p>
             </div>
 
-            <div class="flex justify-between items-center gap-3 px-10 max-w-[380px] mx-auto py-6">
+            <div class="flex justify-between items-center gap-3 max-w-[380px] mx-auto py-6">
                 <input type="text" name="otp[]" class="item otp-form-item" maxlength="1" />
                 <input type="text" name="otp[]" class="item otp-form-item" maxlength="1" />
                 <input type="text" name="otp[]" class="item otp-form-item" maxlength="1" />

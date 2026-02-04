@@ -26,9 +26,6 @@ class HomeController extends Controller
         }
     }
 
-    /**
-     * API for crypto prices (Binance + CoinCap fallback)
-     */
     public function cryptoData()
     {
         $coins = [
@@ -112,9 +109,6 @@ class HomeController extends Controller
         });
     }
 
-    /**
-     * CoinCap fallback (price + 24h + sparkline)
-     */
     private function coincapFallback(string $coinId, string $image)
     {
         try {
