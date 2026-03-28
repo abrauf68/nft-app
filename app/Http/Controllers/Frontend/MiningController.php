@@ -16,11 +16,35 @@ class MiningController extends Controller
     public function index()
     {
         try {
-            $miningMachines = MiningMachine::where('status', 'active')->get();
-            $userMinings = UserMining::where('user_id', auth()->id())->get();
+            $userId = auth()->id();
+
+            // Active machines (running)
+            $activeMachineIds = UserMining::where('user_id', $userId)
+                ->where('status', 'running')
+                ->pluck('mining_machine_id')
+                ->toArray();
+
+            // Check if free machine already used
+            $hasUsedFree = UserMining::where('user_id', $userId)
+                ->whereHas('miningMachine', function ($q) {
+                    $q->where('price', 0);
+                })
+                ->exists();
+
+            // Filter machines
+            $miningMachines = MiningMachine::where('status', 'active')
+                ->whereNotIn('id', $activeMachineIds)
+                ->when($hasUsedFree, function ($q) {
+                    $q->where('price', '>', 0);
+                })
+                ->get();
+
+            $userMinings = UserMining::with('miningMachine')
+                ->where('user_id', $userId)
+                ->get();
+
             return view('frontend.pages.mining.index', compact('miningMachines', 'userMinings'));
         } catch (\Throwable $th) {
-            //throw $th;
             Log::error('Error loading mining page: ' . $th->getMessage());
             return redirect()->back()->with('error', 'An error occurred while loading the home page.');
         }
@@ -51,8 +75,9 @@ class MiningController extends Controller
             $userMining = new UserMining();
             $userMining->user_id = auth()->id();
             $userMining->mining_machine_id = $miningMachine->id;
-            $userMining->start_date = now();
-            $userMining->end_date = now()->addDays($miningMachine->duration_days);
+            $startDate = now();
+            $userMining->start_date = $startDate;
+            $userMining->end_date = (clone $startDate)->addHours($miningMachine->duration_hours);
             $userMining->status = 'running';
             $userMining->daily_reward = $miningMachine->daily_reward;
             $userMining->total_earned = 0.00;

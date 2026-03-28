@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('price', 12, 2);
             $table->decimal('daily_reward', 12, 8);
             $table->integer('duration_days');
+            $table->bigInteger('duration_hours');
             $table->decimal('power', 8, 2)->nullable();
             $table->decimal('total_reward', 14, 8)->default(0.00);
             $table->string('image')->nullable();

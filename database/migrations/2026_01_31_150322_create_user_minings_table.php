@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('mining_machine_id')->constrained()->cascadeOnDelete();
-            $table->decimal('total_earned', 14, 8)->default(0);
+            $table->decimal('total_earned', 14, 8)->default(0.00000000);
             $table->decimal('daily_reward', 14, 8); // snapshot at purchase
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->enum('status', ['running', 'completed', 'cancelled'])
                 ->default('running');
             $table->timestamp('last_mined_at')->nullable();

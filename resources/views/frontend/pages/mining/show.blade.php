@@ -489,7 +489,7 @@
             <div class="section-content">
                 <div class="machine-image">
                     @if ($miningMachine->image)
-                        <img src="{{ asset('storage/' . $miningMachine->image) }}" alt="{{ $miningMachine->name }}">
+                        <img src="{{ asset($miningMachine->image) }}" alt="{{ $miningMachine->name }}">
                     @else
                         <i class="ph ph-cpu"></i>
                     @endif
@@ -509,7 +509,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">Daily Reward</div>
-                        <div class="stat-value positive">{{ number_format($miningMachine->daily_reward, 8) }}</div>
+                        <div class="stat-value positive">{{ number_format($miningMachine->daily_reward, 2) }} USDT</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Duration</div>
@@ -517,7 +517,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Total Reward</div>
-                        <div class="stat-value positive">{{ number_format($miningMachine->total_reward, 8) }}</div>
+                        <div class="stat-value positive">{{ number_format($miningMachine->total_reward, 2) }} USDT</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Power</div>
@@ -547,19 +547,19 @@
                     <div class="calc-grid">
                         <div class="calc-item">
                             <div class="calc-period">Daily</div>
-                            <div class="calc-amount">{{ number_format($miningMachine->daily_reward, 6) }}</div>
+                            <div class="calc-amount">{{ number_format($miningMachine->daily_reward, 2) }} USDT</div>
                         </div>
                         <div class="calc-item">
                             <div class="calc-period">Weekly</div>
-                            <div class="calc-amount">{{ number_format($miningMachine->daily_reward * 7, 6) }}</div>
+                            <div class="calc-amount">{{ number_format($miningMachine->daily_reward * 7, 2) }} USDT</div>
                         </div>
                         <div class="calc-item">
                             <div class="calc-period">Monthly</div>
-                            <div class="calc-amount">{{ number_format($miningMachine->daily_reward * 30, 6) }}</div>
+                            <div class="calc-amount">{{ number_format($miningMachine->daily_reward * 30, 2) }} USDT</div>
                         </div>
                         <div class="calc-item">
                             <div class="calc-period">Total</div>
-                            <div class="calc-amount">{{ number_format($miningMachine->total_reward, 6) }}</div>
+                            <div class="calc-amount">{{ number_format($miningMachine->total_reward, 2) }} USDT</div>
                         </div>
                     </div>
                 </div>

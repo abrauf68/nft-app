@@ -553,21 +553,112 @@
             background: var(--text-muted);
         }
 
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background: #1f2933;
-            border-radius: 6px;
-            overflow: hidden;
+        /* Stopwatch BTC counter animation */
+        .btc-amount {
+            font-family: 'Courier New', monospace;
+            font-variant-numeric: tabular-nums;
+            transition: all 0.1s ease;
+            display: inline-block;
         }
 
+        .btc-amount.updating {
+            animation: pulse-update 0.3s ease;
+            color: #22c55e;
+        }
+
+        @keyframes pulse-update {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Real-time mining indicator */
+        .user-mining-row.running {
+            position: relative;
+            /* border-left: 3px solid #22c55e; */
+            animation: subtle-pulse 2s infinite;
+        }
+
+        @keyframes subtle-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+            }
+        }
+
+        /* Progress bar animation */
         .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #22c55e, #16a34a);
-            transition: width 1s linear;
+            position: relative;
+            transition: width 0.5s linear;
         }
 
+        .progress-bar.running::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Live indicator for status */
+        .status-running {
+            position: relative;
+            padding-right: 15px;
+        }
+
+        .status-running::after {
+            content: '';
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
     </style>
 @endsection
 
@@ -638,27 +729,29 @@
                         $startDate = Carbon\Carbon::parse($mining->start_date);
                         $endDate = Carbon\Carbon::parse($mining->end_date);
 
-                        // Total & passed days
-                        $totalDays = max($startDate->diffInDays($endDate), 1);
-                        $passedDays = $startDate->lessThan($now) ? $startDate->diffInDays(min($now, $endDate)) : 0;
-
-                        // Progress %
-                        $progress = min(($passedDays / $totalDays) * 100, 100);
-
-                        // Remaining days
-                        $remainingDays = max($totalDays - $passedDays, 0);
-
-                        // Daily reward
-                        $dailyReward = $mining->miningMachine->daily_reward ?? 0;
-
-                        // Total earned (live)
-                        $totalEarned = $passedDays * $dailyReward;
+                        // Total & passed time in seconds
+                        $totalSeconds = max($startDate->diffInSeconds($endDate), 1);
+                        $passedSeconds = $startDate->lessThan($now)
+                            ? $startDate->diffInSeconds(min($now, $endDate))
+                            : 0;
 
                         // Auto status
                         $status = $now->greaterThanOrEqualTo($endDate) ? 'completed' : $mining->status;
+
+                        // Progress %
+                        $progress = min(($passedSeconds / $totalSeconds) * 100, 100);
+
+                        // Reward per second
+                        $dailyReward = $mining->miningMachine->daily_reward ?? 0;
+                        $rewardPerSecond = $dailyReward / 86400;
+
+                        // Current earned (server fallback)
+                        $currentEarned =
+                            $mining->total_earned ??
+                            ($mining->earned_amount ?? ($passedSeconds * $rewardPerSecond));
                     @endphp
 
-                    <div class="user-mining-row">
+                    <div class="user-mining-row @if ($status === 'running') running @endif">
                         <!-- HEADER -->
                         <div class="user-mining-header">
                             <div class="user-mining-icon">
@@ -676,7 +769,7 @@
                                 <div class="user-mining-meta">
                                     <span>ID: {{ $mining->id }}</span>
                                     <span>•</span>
-                                    <span>{{ $mining->power ?? '0' }} TH/s</span>
+                                    <span>{{ $mining->miningMachine->power ?? '0' }} TH/s</span>
                                 </div>
                             </div>
                         </div>
@@ -691,7 +784,8 @@
                         @if ($status === 'running')
                             <div class="progress-container">
                                 <div class="progress-bar" data-start="{{ $startDate->timestamp }}"
-                                    data-end="{{ $endDate->timestamp }}">
+                                    data-end="{{ $endDate->timestamp }}"
+                                    @if ($status === 'running') class="running" @endif>
                                 </div>
                             </div>
 
@@ -705,15 +799,13 @@
                         <!-- FOOTER -->
                         <div class="user-mining-footer">
                             <div class="user-mining-amount">
-                                <span class="btc-amount"
-                                    data-start="{{ $startDate->timestamp }}"
-                                    data-end="{{ $endDate->timestamp }}"
-                                    data-daily="{{ $dailyReward }}">
-                                    0.000000
+                                <span class="btc-amount" data-daily="{{ $dailyReward }}"
+                                    data-start="{{ $startDate->timestamp }}" data-end="{{ $endDate->timestamp }}"
+                                    data-base-earned="{{ $currentEarned }}">
+                                    {{ number_format($currentEarned, 8) }}
                                 </span>
-                                <span class="text-xs text-muted">BTC</span>
+                                <span class="text-xs text-muted">USDT</span>
                             </div>
-
 
                             @if ($progress > 0)
                                 <div class="user-mining-percentage">
@@ -762,7 +854,7 @@
 
                         @if ($machine->image)
                             <div class="machine-image">
-                                <img src="{{ asset('storage/' . $machine->image) }}" alt="{{ $machine->name }}">
+                                <img src="{{ asset($machine->image) }}" alt="{{ $machine->name }}">
                             </div>
                         @endif
 
@@ -861,40 +953,83 @@
 
 @section('script')
     <script>
-document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            const miningRows = document.querySelectorAll('.user-mining-row.running');
 
-    document.querySelectorAll('.btc-amount').forEach(el => {
+            if (miningRows.length === 0) return;
 
-        const startTime = parseInt(el.dataset.start) * 1000;
-        const endTime   = parseInt(el.dataset.end) * 1000;
-        const dailyBTC  = parseFloat(el.dataset.daily);
+            const formatBTC = (num) => num.toFixed(8).replace(/\.?0+$/, ""); // clean look
 
-        function updateBTC() {
-            const now = Date.now();
+            function updateEarnings() {
+                const now = Date.now();
 
-            if (now <= startTime) {
-                el.textContent = '0.000000';
-                return;
+                miningRows.forEach(row => {
+                    const btcEl = row.querySelector('.btc-amount');
+                    const progressEl = row.querySelector('.progress-bar');
+                    const progressText = row.querySelector('.progress-text');
+                    const remainingText = row.querySelector('.remaining-text');
+
+                    if (!btcEl) return;
+
+                    const startMs = parseInt(btcEl.dataset.start) * 1000;
+                    const endMs = parseInt(btcEl.dataset.end) * 1000;
+                    const daily = parseFloat(btcEl.dataset.daily);
+
+                    if (now < startMs || now > endMs) return;
+
+                    const btcPerSecond = daily / 86400;
+
+                    // ── Core calculation ───────────────────────────────
+                    const secondsElapsed = (now - startMs) / 1000;
+                    const baseEarned = parseFloat(btcEl.dataset.baseEarned) || 0;
+                    const earnedNow = baseEarned + (secondsElapsed * btcPerSecond);
+                    // ───────────────────────────────────────────────────
+
+                    btcEl.textContent = formatBTC(earnedNow);
+
+                    // Progress
+                    const totalMs = endMs - startMs;
+                    const progress = Math.min(100, (now - startMs) / totalMs * 100);
+                    if (progressEl) progressEl.style.width = `${progress}%`;
+                    if (progressText) progressText.textContent = `${progress.toFixed(1)}% complete`;
+
+                    // Remaining time
+                    if (remainingText) {
+                        const remMs = endMs - now;
+                        if (remMs <= 0) {
+                            remainingText.textContent = 'Completed';
+                        } else {
+                            const d = Math.floor(remMs / 86400000);
+                            const h = Math.floor((remMs % 86400000) / 3600000);
+                            const m = Math.floor((remMs % 3600000) / 60000);
+                            const s = Math.floor((remMs % 60000) / 1000);
+
+                            let str = '';
+                            if (d > 0) str += `${d}d `;
+                            if (h > 0 || d > 0) str += `${h}h `;
+                            if (m > 0 || h > 0) str += `${m}m `;
+                            str += `${s}s`;
+                            remainingText.textContent = `${str.trim()} remaining`;
+                        }
+                    }
+
+                    // Visual pulse (optional)
+                    btcEl.classList.add('updating');
+                    setTimeout(() => btcEl.classList.remove('updating'), 400);
+                });
+
+                requestAnimationFrame(updateEarnings);
             }
 
-            const effectiveNow = Math.min(now, endTime);
-            const passedMs = effectiveNow - startTime;
+            // Start smooth animation (~60fps)
+            requestAnimationFrame(updateEarnings);
 
-            const passedDays = passedMs / (1000 * 60 * 60 * 24);
-            const earned = passedDays * dailyBTC;
-
-            el.textContent = earned.toFixed(6);
-        }
-
-        // initial
-        updateBTC();
-
-        // 🔥 update every second
-        setInterval(updateBTC, 1000);
-    });
-
-});
-</script>
-
-
+            // Re-init when tab becomes visible again
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    requestAnimationFrame(updateEarnings);
+                }
+            });
+        });
+    </script>
 @endsection

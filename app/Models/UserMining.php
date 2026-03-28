@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class UserMining extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function miningMachine()
+    {
+        return $this->belongsTo(MiningMachine::class, 'mining_machine_id');
+    }
 }
