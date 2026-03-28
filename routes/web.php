@@ -207,6 +207,7 @@ Route::name('frontend.')->group(function () {
         Route::get('/mining', [MiningController::class, 'index'])->name('mining');
         Route::get('/mining/{slug}', [MiningController::class, 'show'])->name('mining.show');
         Route::get('/mining/{slug}/purchase', [MiningController::class, 'purchase'])->name('mining.purchase');
+        Route::get('/mining/claim/{id}', [MiningController::class, 'claim'])->name('mining.claim');
     });
 
     Route::post('/crypto/webhook', [WalletController::class, 'handle'])

@@ -677,7 +677,7 @@
                     <i class="ph ph-currency-circle-dollar"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-value">{{ number_format($totalEarnings ?? 0, 4) }}</div>
+                    <div class="stat-value">{{ number_format($totalMined ?? 0, 4) }}</div>
                     <div class="stat-label">Earnings</div>
                 </div>
             </div>
@@ -687,7 +687,7 @@
                     <i class="ph ph-cpu"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-value">{{ $activeMinings ?? 0 }}</div>
+                    <div class="stat-value">{{ $activeMachines ?? 0 }}</div>
                     <div class="stat-label">Active</div>
                 </div>
             </div>
@@ -707,7 +707,7 @@
                     <i class="ph ph-lightning"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-value">{{ $totalPower ?? '0' }}</div>
+                    <div class="stat-value">{{ $totalPower ?? '0' }} HP</div>
                     <div class="stat-label">Power</div>
                 </div>
             </div>
@@ -737,6 +737,9 @@
 
                         // Auto status
                         $status = $now->greaterThanOrEqualTo($endDate) ? 'completed' : $mining->status;
+                        if ($status !== 'completed' && $now->greaterThanOrEqualTo($endDate)) {
+                            $status = 'claimable';
+                        }
 
                         // Progress %
                         $progress = min(($passedSeconds / $totalSeconds) * 100, 100);
@@ -746,16 +749,20 @@
                         $rewardPerSecond = $dailyReward / 86400;
 
                         // Current earned (server fallback)
-                        $currentEarned =
-                            $mining->total_earned ??
-                            ($mining->earned_amount ?? ($passedSeconds * $rewardPerSecond));
+                        if ($status === 'completed') {
+                            $currentEarned = $mining->miningMachine->total_reward;
+                        }else{
+                            $currentEarned =
+                                $mining->total_earned ??
+                                ($mining->earned_amount ?? ($passedSeconds * $rewardPerSecond));
+                        }
                     @endphp
 
                     <div class="user-mining-row @if ($status === 'running') running @endif">
                         <!-- HEADER -->
                         <div class="user-mining-header">
                             <div class="user-mining-icon">
-                                <i class="ph ph-pickaxe"></i>
+                                <i class="ph ph-cpu"></i>
                             </div>
 
                             <div class="user-mining-info">
@@ -769,7 +776,7 @@
                                 <div class="user-mining-meta">
                                     <span>ID: {{ $mining->id }}</span>
                                     <span>•</span>
-                                    <span>{{ $mining->miningMachine->power ?? '0' }} TH/s</span>
+                                    <span>{{ $mining->miningMachine->power ?? '0' }} HP</span>
                                 </div>
                             </div>
                         </div>
@@ -807,7 +814,9 @@
                                 <span class="text-xs text-muted">USDT</span>
                             </div>
 
-                            @if ($progress > 0)
+                            @if ($status === 'completed')
+                                <a href="{{ route('frontend.mining.claim', $mining->id) }}" class="bg-p2 text-white px-6 py-2 rounded-full font-semibold text-sm">Claim</a>
+                            @else
                                 <div class="user-mining-percentage">
                                     {{ round($progress) }}%
                                 </div>
@@ -876,7 +885,7 @@
                             <div class="machine-stat">
                                 <i class="ph ph-lightning"></i>
                                 Power
-                                <strong>{{ $machine->power ?? '—' }}</strong>
+                                <strong>{{ $machine->power ?? '—' }} HP</strong>
                             </div>
                             <div class="machine-stat">
                                 <i class="ph ph-gauge"></i>

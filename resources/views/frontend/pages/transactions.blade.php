@@ -45,7 +45,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: #f3f4f6;
+        background-color: #613BFF;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -145,14 +145,21 @@
                     {{-- Left Side --}}
                     <div class="transaction-left">
                         {{-- Icon --}}
+                        @php
+                            $icon = match ($txn->transaction_type) {
+                                'deposit' => 'ph-arrow-down',
+                                'withdrawal' => 'ph-arrow-up',
+                                'referral_bonus' => 'ph-gift',
+                                'reward' => 'ph-trophy',
+                                'transfer' => 'ph-arrows-left-right',
+                                'mined' => 'ph-cpu',
+                                'purchase' => 'ph-shopping-cart',
+                                default => 'ph-circle',
+                            };
+                        @endphp
+
                         <div class="transaction-icon">
-                            <i class="ph
-                                {{ $txn->transaction_type === 'deposit' ? 'ph-arrow-down' : '' }}
-                                {{ $txn->transaction_type === 'withdrawal' ? 'ph-arrow-up' : '' }}
-                                {{ $txn->transaction_type === 'referral_bonus' ? 'ph-gift' : '' }}
-                                {{ $txn->transaction_type === 'reward' ? 'ph-trophy' : '' }}
-                                {{ $txn->transaction_type === 'transfer' ? 'ph-arrows-left-right' : '' }}
-                                {{ $txn->transaction_type === 'mined' ? 'ph-pickaxe' : '' }}"></i>
+                            <i class="ph {{ $icon }}"></i>
                         </div>
 
                         {{-- Info --}}
