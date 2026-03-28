@@ -253,7 +253,7 @@
         </div>
     </div>
 
-    <div class="container" style="padding:40px">
+    {{-- <div class="container" style="padding:40px">
 
         <div id="skeleton">
             <div class="skeleton-icons">
@@ -280,13 +280,13 @@
 
             <canvas id="cryptoChart" height="120"></canvas>
         </div>
-    </div>
+    </div> --}}
 
 @endsection
 
 @section('script')
     <script src="{{ asset('frontAssets/js/plugins/circle-slider.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const skeleton = document.getElementById('skeleton');
         const content = document.getElementById('content');
@@ -382,5 +382,5 @@
                 ch.style.color = c >= 0 ? 'green' : 'red';
             }
         })();
-    </script>
+    </script> --}}
 @endsection
